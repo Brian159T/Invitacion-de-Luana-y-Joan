@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { Plane, Calendar, Gift, Camera, HelpCircle } from 'lucide-react'
 import './App.css'
 import heroImage from './assets/L y J.png'
 
@@ -317,7 +318,10 @@ function App() {
         panels={[
           // Panel 1 — Viernes 18
           <div>
-            <p className="section__eyebrow">📅 Viernes 18 de Junio</p>
+            <p className="section__eyebrow">
+              <Calendar className="eyebrow-icon" size={16} strokeWidth={2} />
+              Viernes 18 de Junio
+            </p>
             <h3 className="section__subtitle">Comida con la familia</h3>
             <ul className="info-list">
               <li>
@@ -345,7 +349,10 @@ function App() {
 
           // Panel 2 — Sábado 19
           <div>
-            <p className="section__eyebrow">📅 Sábado 19 de Junio</p>
+            <p className="section__eyebrow">
+              <Calendar className="eyebrow-icon" size={16} strokeWidth={2} />
+              Sábado 19 de Junio
+            </p>
             <h3 className="section__subtitle">Ceremonia y banquete</h3>
             <ul className="info-list">
               <li>
@@ -384,7 +391,10 @@ function App() {
         sticky={
           <>
             <p className="sticky-split__eyebrow">Guía para invitados</p>
-            <h2 className="section__title">✈️ BARCELONA</h2>
+            <h2 className="section__title">
+              <Plane className="title-icon" size={32} strokeWidth={1.75} />
+              BARCELONA
+            </h2>
             <p className="section__script">
               Todo lo que necesitáis si venís de fuera
             </p>
@@ -451,7 +461,10 @@ function App() {
       {/* ---------------------------------------------------- */}
       <section id="regalos" className="section section--center">
         <Reveal>
-          <h2 className="section__title">🎁 REGALOS</h2>
+          <h2 className="section__title">
+            <Gift className="title-icon" size={32} strokeWidth={1.75} />
+            REGALOS
+          </h2>
         </Reveal>
 
         <Reveal delay={150} className="gift-text">
@@ -482,7 +495,10 @@ function App() {
         sticky={
           <>
             <p className="sticky-split__eyebrow">Nuestros momentos</p>
-            <h2 className="section__title">📸 GALERÍA</h2>
+            <h2 className="section__title">
+              <Camera className="title-icon" size={32} strokeWidth={1.75} />
+              GALERÍA
+            </h2>
             <p className="section__script">Un vistazo a nuestra historia</p>
           </>
         }
@@ -502,7 +518,10 @@ function App() {
         sticky={
           <>
             <p className="sticky-split__eyebrow">Dudas frecuentes</p>
-            <h2 className="section__title">❓ PREGUNTAS</h2>
+            <h2 className="section__title">
+              <HelpCircle className="title-icon" size={32} strokeWidth={1.75} />
+              PREGUNTAS
+            </h2>
             <p className="section__script">Todo lo que necesitáis saber</p>
           </>
         }
