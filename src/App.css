@@ -2,17 +2,22 @@
 
 /* ============================================================
    VARIABLES / PALETA
+   -> Rosa mucho más suave y frío (menos salmón/coral). Un único
+      tono de fondo recorre toda la web; --bg-soft es apenas un
+      matiz más profundo, reservado solo para tarjetas.
    ============================================================ */
 
 :root {
-  --bg: #e9e6dd;
-  --bg-soft: #f2f0e8;
-  --text: #1c2b3a;
-  --text-soft: #45525f;
-  --line: #c9c4b6;
-  --link: #35597a;
-  --cta: #b96b3c;
-  --cta-hover: #9c5730;
+  --bg: #fbf2ef;           /* rosa muy suave — fondo uniforme de toda la web */
+  --bg-soft: #f6e3dd;      /* rosa apenas más marcado — solo para tarjetas */
+  --text: #40292b;         /* ciruela oscuro — texto principal */
+  --text-soft: #7a5b5c;    /* siena apagado — texto secundario */
+  --line: #e6cec7;         /* línea fina, muy suave */
+  --link: #97534e;         /* rosewood — enlaces */
+  --cta: #ac4a5e;          /* rosa vino — único acento de color */
+  --cta-hover: #8a3a4a;
+  --gold: #bb9872;         /* oro apagado — solo para el divisor firma */
+  --shadow: 64, 41, 43;    /* rgb del color de sombra (derivado de --text) */
 
   --font-display: 'Playfair Display', 'Times New Roman', serif;
   --font-body: 'Cormorant Garamond', Georgia, serif;
@@ -60,6 +65,26 @@ ul {
   list-style: none;
 }
 
+:focus-visible {
+  outline: 2px solid var(--cta);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal,
+  .stack-section__inner,
+  .stack-section::after {
+    transition: none !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* ============================================================
    ANIMACIÓN: reveal-on-scroll (los divs "suben" al hacer scroll)
    ============================================================ */
@@ -75,6 +100,56 @@ ul {
 .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* ============================================================
+   ELEMENTO FIRMA: divisor con rombo dorado
+   ============================================================ */
+
+.signature-divider {
+  display: block;
+  width: 68px;
+  height: 1px;
+  background: var(--gold);
+  margin: 22px 0 26px;
+  position: relative;
+}
+
+.signature-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.stack-section--center .signature-divider,
+.content-section--center .signature-divider {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ============================================================
+   TARJETA DE CONTENIDO
+   -> Utilidad reutilizable: separa cada bloque de información
+      del fondo rosa con un panel algo más marcado, un borde muy
+      fino y una sombra suave.
+   ============================================================ */
+
+.content-card {
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  box-shadow: 0 18px 40px -16px rgba(var(--shadow), 0.16);
+  padding: 40px 44px;
+}
+
+@media (max-width: 640px) {
+  .content-card {
+    padding: 28px 26px;
+  }
 }
 
 /* ============================================================
@@ -98,53 +173,62 @@ ul {
   font-family: var(--font-script);
   font-size: 26px;
   color: var(--text);
-  border: 1px solid var(--text);
+  border: 1px solid var(--gold);
   border-radius: 50%;
   width: 54px;
   height: 54px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .navbar__links {
   display: flex;
   gap: 32px;
-  font-size: 17px;
+  font-size: 16px;
+  letter-spacing: 0.02em;
 }
 
 .navbar__links a {
-  color: var(--link);
+  color: var(--text-soft);
+}
+
+.navbar__links a:hover {
+  color: var(--cta);
 }
 
 .navbar__rsvp {
   color: var(--cta);
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
+  font-size: 15px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--cta);
+  padding-bottom: 2px;
+  white-space: nowrap;
 }
 
 .navbar__rsvp:hover {
   color: var(--cta-hover);
+  border-color: var(--cta-hover);
+  text-decoration: none;
+}
+
+@media (max-width: 860px) {
+  .navbar__links {
+    display: none;
+  }
 }
 
 @media (max-width: 720px) {
   .navbar {
     padding: 14px 20px;
   }
-  .navbar__links {
-    gap: 16px;
-    font-size: 14px;
-  }
 }
 
 /* ============================================================
    HERO — foto grande de portada + nombres/fecha/lugar
-   -> La imagen ocupa todo el ancho y una altura de pantalla
-      (dvh/svh) para que se vea "grande" nada más entrar,
-      con un degradado inferior que da legibilidad al texto.
-      El texto se sitúa sobre la foto, pegado a la parte baja,
-      y se reajusta en móvil para no recortar la imagen ni el
-      texto durante el scroll.
    ============================================================ */
 
 .hero {
@@ -173,7 +257,6 @@ ul {
   object-position: center 28%;
 }
 
-/* Degradado inferior para que el texto sea legible sobre la foto */
 .hero::after {
   content: '';
   position: absolute;
@@ -181,9 +264,9 @@ ul {
   z-index: 1;
   background: linear-gradient(
     to top,
-    rgba(28, 43, 58, 0.82) 0%,
-    rgba(28, 43, 58, 0.4) 38%,
-    rgba(28, 43, 58, 0) 68%
+    rgba(var(--shadow), 0.82) 0%,
+    rgba(var(--shadow), 0.4) 38%,
+    rgba(var(--shadow), 0) 68%
   );
   pointer-events: none;
 }
@@ -196,14 +279,14 @@ ul {
   margin: 0 auto;
   padding: 40px 24px 64px;
   text-align: center;
-  color: var(--bg-soft);
+  color: var(--bg);
 }
 
 .hero__title {
   font-size: clamp(40px, 9vw, 88px);
   letter-spacing: 0.03em;
   line-height: 1.15;
-  color: var(--bg-soft);
+  color: var(--bg);
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.25);
 }
 
@@ -212,39 +295,40 @@ ul {
   font-style: italic;
   font-size: 0.5em;
   margin: 4px 0;
+  color: #e3b79a;
 }
 
 .hero__date {
   margin-top: 18px;
   font-family: var(--font-script);
   font-size: 28px;
-  color: var(--bg-soft);
+  color: var(--bg);
 }
 
 .hero__place {
   margin-top: 4px;
-  font-size: 17px;
-  letter-spacing: 0.08em;
+  font-size: 16px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--bg-soft);
-  opacity: 0.9;
+  color: var(--bg);
+  opacity: 0.85;
 }
 
 .btn {
   display: inline-block;
   margin-top: 28px;
   padding: 12px 30px;
-  border: 1px solid var(--bg-soft);
+  border: 1px solid var(--bg);
   border-radius: 999px;
-  color: var(--bg-soft);
-  font-size: 15px;
-  letter-spacing: 0.08em;
+  color: var(--bg);
+  font-size: 14px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  transition: background 0.25s ease, color 0.25s ease;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
 
 .btn:hover {
-  background: var(--bg-soft);
+  background: var(--bg);
   color: var(--text);
   text-decoration: none;
 }
@@ -281,7 +365,7 @@ ul {
   }
 
   .hero__place {
-    font-size: 14px;
+    font-size: 13px;
   }
 }
 
@@ -293,7 +377,7 @@ ul {
 }
 
 /* ============================================================
-   PARES DE FOTOS INLINE (placeholders dentro de paneles)
+   PARES DE FOTOS INLINE
    ============================================================ */
 
 .image-placeholder {
@@ -302,17 +386,16 @@ ul {
   min-width: 220px;
   min-height: 260px;
   background: var(--bg-soft);
-  border: 1px dashed var(--line);
+  border: 1px dashed var(--gold);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-soft);
-  font-size: 14px;
-  letter-spacing: 0.05em;
+  font-size: 13px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-/* Par de fotos "plano", pensado para ir DENTRO de un panel de StickySplit */
 .photo-pair-inline {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -342,8 +425,10 @@ ul {
 }
 
 /* ============================================================
-   SECCIONES GENERALES (bloques centrados: cuenta atrás,
-   regalos, rsvp)
+   SECCIONES CORTAS APILADAS (hero, cuenta atrás, regalos, rsvp)
+   -> Son las únicas que usan el efecto "stack": caben en un
+      viewport, así que quedarse "clavadas" mientras la siguiente
+      las cubre nunca oculta contenido.
    ============================================================ */
 
 .section {
@@ -380,17 +465,19 @@ ul {
 .section__subtitle {
   font-size: 24px;
   margin-top: 6px;
+  color: var(--text);
 }
 
 .section__eyebrow {
-  font-size: 14px;
-  letter-spacing: 0.1em;
+  font-size: 13px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--cta);
   margin: 0 0 8px;
   display: flex;
   align-items: center;
   gap: 8px;
+  font-weight: 600;
 }
 
 .eyebrow-icon {
@@ -411,11 +498,25 @@ ul {
 }
 
 /* ============================================================
+   SECCIONES LARGAS EN FLUJO NORMAL
+   (la boda, barcelona, galería, faq)
+   -> A propósito NO usan position:sticky en el contenedor
+      exterior: solo la columna izquierda de StickySplit es
+      sticky (y mide un viewport exacto), mientras la columna
+      derecha, mucho más alta, se desplaza con la página con
+      total normalidad. Así se ve TODO el contenido de cada
+      sección, panel a panel, sin que nada quede atrapado detrás
+      de una fijación que nunca se libera.
+   ============================================================ */
+
+.content-section {
+  position: relative;
+  background: var(--bg);
+  padding: 56px 0;
+}
+
+/* ============================================================
    STICKY SPLIT
-   -> Columna izquierda: position sticky, se queda fija en pantalla
-   -> Columna derecha: más alta que el viewport; cada "panel" hace
-      fade + sube (clase .reveal) al entrar en el área visible,
-      mientras la izquierda no se mueve.
    ============================================================ */
 
 .sticky-split {
@@ -454,21 +555,22 @@ ul {
 
 .sticky-split__eyebrow {
   font-size: 13px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--cta);
   margin: 0 0 10px;
+  font-weight: 600;
 }
 
 .sticky-split__scroll {
   display: flex;
   flex-direction: column;
-  gap: 22vh;
-  padding: 22vh 0;
+  gap: 12vh;
+  padding: 14vh 0;
 }
 
 .sticky-split__panel {
-  min-height: 40vh;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -494,16 +596,12 @@ ul {
   .sticky-split__sticky {
     position: static;
     height: auto;
-    padding: 72px 0 40px;
+    padding: 56px 0 32px;
   }
 
   .sticky-split__scroll {
-    gap: 64px;
-    padding: 0 0 72px;
-  }
-
-  .sticky-split__panel {
-    min-height: 0;
+    gap: 40px;
+    padding: 0 0 56px;
   }
 }
 
@@ -525,17 +623,25 @@ ul {
   font-family: var(--font-display);
   font-weight: 600;
   margin-right: 6px;
+  color: var(--text);
+}
+
+.day-card .photo-pair-inline {
+  margin-top: 28px;
 }
 
 /* ============================================================
    CUENTA ATRÁS
    ============================================================ */
 
+.countdown-card {
+  margin-top: 8px;
+}
+
 .countdown {
   display: flex;
   align-items: center;
-  gap: 18px;
-  margin-top: 36px;
+  gap: 20px;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -550,27 +656,36 @@ ul {
 .countdown__number {
   font-family: var(--font-display);
   font-size: 44px;
+  color: var(--cta);
 }
 
 .countdown__label {
-  font-size: 13px;
-  letter-spacing: 0.08em;
+  font-size: 12px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-soft);
+  margin-top: 2px;
 }
 
 .countdown__colon {
   font-size: 32px;
-  color: var(--line);
+  color: var(--gold);
   margin-bottom: 20px;
 }
 
 /* ============================================================
-   GUÍA DE BARCELONA (paneles dentro del sticky-split)
+   GUÍA DE BARCELONA
    ============================================================ */
 
+.guide-panel {
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  box-shadow: 0 18px 40px -16px rgba(var(--shadow), 0.16);
+  padding: 34px 38px;
+}
+
 .guide-panel h4 {
-  font-size: 24px;
+  font-size: 23px;
   margin-bottom: 12px;
 }
 
@@ -580,11 +695,21 @@ ul {
   margin: 0 0 14px;
 }
 
+.guide-panel a {
+  font-weight: 600;
+}
+
 .guide-card__todo {
   font-size: 14px;
   font-style: italic;
   color: var(--text-soft);
-  opacity: 0.7;
+  opacity: 0.75;
+}
+
+@media (max-width: 640px) {
+  .guide-panel {
+    padding: 26px 24px;
+  }
 }
 
 /* ============================================================
@@ -595,7 +720,7 @@ ul {
   position: relative;
   background: var(--bg-soft);
   border: 1px solid var(--line);
-  box-shadow: 0 24px 60px rgba(28, 43, 58, 0.14);
+  box-shadow: 0 20px 50px rgba(var(--shadow), 0.16);
   padding: 64px 56px;
   text-align: center;
   max-width: 520px;
@@ -616,15 +741,15 @@ ul {
 }
 
 .cta-card__title a {
-  color: var(--text);
+  color: var(--cta);
   text-decoration: underline;
   text-underline-offset: 6px;
-  text-decoration-color: var(--text);
+  text-decoration-color: var(--cta);
 }
 
 .cta-card__title a:hover {
-  color: var(--cta);
-  text-decoration-color: var(--cta);
+  color: var(--cta-hover);
+  text-decoration-color: var(--cta-hover);
 }
 
 .cta-card__sub {
@@ -645,13 +770,13 @@ ul {
   font-family: var(--font-display);
   font-size: 19px;
   letter-spacing: 0.05em;
+  color: var(--text);
 }
 
 @media (max-width: 860px) {
   .cta-card {
     max-width: 100%;
     padding: 44px 28px;
-    box-shadow: none;
   }
 }
 
@@ -663,13 +788,12 @@ ul {
   max-width: 560px;
   color: var(--text-soft);
   font-size: 19px;
-  margin-top: 20px;
 }
 
 .gift-box {
-  margin-top: 36px;
+  margin-top: 32px;
   display: flex;
-  gap: 40px;
+  gap: 24px;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -679,41 +803,36 @@ ul {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  padding: 20px 32px;
+  padding: 18px 30px;
   border: 1px solid var(--line);
-  background: var(--bg-soft);
-  min-width: 220px;
+  background: var(--bg);
+  min-width: 200px;
 }
 
 .gift-box__label {
-  font-size: 13px;
-  letter-spacing: 0.1em;
+  font-size: 12px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--cta);
+  font-weight: 600;
 }
 
 .gift-box__value {
   font-family: var(--font-display);
   font-size: 20px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
+  color: var(--text);
 }
 
 /* ============================================================
-   RSVP FINAL (sección al final del scroll, antes del footer)
-   ============================================================ */
-
-.rsvp-section {
-  border-top: 1px solid var(--line);
-  padding-bottom: 140px;
-}
-
-/* ============================================================
-   FAQ (paneles dentro del sticky-split)
+   FAQ
    ============================================================ */
 
 .faq-item {
-  border-bottom: 1px solid var(--line);
-  padding: 18px 0;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  box-shadow: 0 16px 34px -16px rgba(var(--shadow), 0.16);
+  padding: 26px 32px;
 }
 
 .faq-item summary {
@@ -721,6 +840,9 @@ ul {
   font-family: var(--font-display);
   font-size: 20px;
   list-style: none;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
 }
 
 .faq-item summary::-webkit-details-marker {
@@ -730,9 +852,10 @@ ul {
 .faq-item summary::before {
   content: '+';
   display: inline-block;
-  width: 20px;
+  width: 16px;
   color: var(--cta);
   font-weight: 700;
+  flex-shrink: 0;
 }
 
 .faq-item[open] summary::before {
@@ -740,9 +863,15 @@ ul {
 }
 
 .faq-item p {
-  margin: 12px 0 0 20px;
+  margin: 14px 0 0 28px;
   color: var(--text-soft);
   font-size: 17px;
+}
+
+@media (max-width: 640px) {
+  .faq-item {
+    padding: 20px 22px;
+  }
 }
 
 /* ============================================================
@@ -754,6 +883,7 @@ ul {
   padding: 64px 48px 40px;
   text-align: center;
   color: var(--text-soft);
+  background: var(--bg);
 }
 
 .footer__logo {
@@ -772,8 +902,12 @@ ul {
 }
 
 .footer__links a {
-  color: var(--link);
+  color: var(--text-soft);
   font-size: 15px;
+}
+
+.footer__links a:hover {
+  color: var(--cta);
 }
 
 .footer__contact p {
@@ -786,13 +920,17 @@ ul {
   font-size: 13px;
   opacity: 0.7;
 }
+
 /* ============================================================
-   STACK — paneles que se apilan al hacer scroll
+   STACK — solo para las 4 secciones cortas de un viewport
+   (hero, cuenta atrás, regalos, rsvp final). Cada una se queda
+   "clavada" arriba mientras la siguiente la cubre; como ninguna
+   mide más de 100vh, nunca esconden contenido.
    ============================================================ */
 
 .stack {
   position: relative;
-  isolation: isolate; /* aísla el z-index de los paneles del resto de la página */
+  isolation: isolate;
 }
 
 .stack-section {
@@ -801,11 +939,11 @@ ul {
   min-height: 100vh;
   background: var(--bg);
   border-radius: 0;
-  box-shadow: 0 -50px 80px -20px rgba(28, 43, 58, 0.25);
+  box-shadow: 0 -40px 70px -24px rgba(var(--shadow), 0.14);
 }
 
 .stack-section--hero {
-  background: var(--text); /* evita flash de fondo antes de que cargue la foto */
+  background: var(--text);
 }
 
 .stack-section--center {
@@ -817,17 +955,13 @@ ul {
   padding: 110px 48px;
 }
 
-/* Capa de oscurecido dinámico: se hace más oscura cuanto más
-   "cubierto" está el panel por el siguiente (--cover 0 → 1).
-   Al ser un ::after (no un ancestro real de los hijos), no rompe
-   el position:sticky interno de StickySplit. */
 .stack-section::after {
   content: '';
   position: absolute;
   inset: 0;
   z-index: 2;
   background: var(--text);
-  opacity: calc(var(--cover, 0) * 0.4);
+  opacity: calc(var(--cover, 0) * 0.35);
   pointer-events: none;
   transition: opacity 0.05s linear;
 }
@@ -835,11 +969,8 @@ ul {
 .stack-section__inner {
   position: relative;
   width: 100%;
-  height: 100%;
 }
 
-/* Solo los paneles "interactive" (sin sticky interno) reciben el
-   movimiento de escala + desplazamiento hacia arriba, más dinámico. */
 .stack-section--interactive .stack-section__inner {
   transform: scale(calc(1 - var(--cover, 0) * 0.1))
     translateY(calc(var(--cover, 0) * -60px));
@@ -847,6 +978,7 @@ ul {
   transition: transform 0.05s linear, filter 0.05s linear;
   will-change: transform, filter;
 }
+
 @media (max-width: 860px) {
   .stack-section {
     min-height: 100svh;
