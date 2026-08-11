@@ -114,21 +114,25 @@ function useStackCoverEffect() {
 /* ============================================================
    COMPONENTE: StackSection
    -> SOLO para secciones cortas de un viewport (hero, cuenta
-      atrás, regalos, rsvp). Las secciones largas con contenido
-      desplazable (La Boda, Barcelona, Galería, FAQ) usan
-      <ContentSection>, en flujo normal, para que todo su
-      contenido sea alcanzable con scroll normal.
+      atrás, regalos, rsvp). Usan sticky real: quedan "clavadas"
+      mientras la siguiente las cubre. Como ninguna mide más de
+      100vh, nunca esconden contenido.
+      El zIndex se pasa desde App() como un contador GLOBAL y
+      creciente para toda la página (no se reinicia por sección),
+      así el orden de "quién cubre a quién" es siempre correcto
+      sin importar si la sección anterior/siguiente es de este
+      tipo o una <SlideSection>.
    ============================================================ */
 
 function StackSection({
   id,
-  index,
+  zIndex,
   interactive = false,
   className = '',
   children,
 }: {
   id?: string
-  index: number
+  zIndex: number
   interactive?: boolean
   className?: string
   children: React.ReactNode
@@ -137,7 +141,7 @@ function StackSection({
     <section
       id={id}
       className={`stack-section ${interactive ? 'stack-section--interactive' : ''} ${className}`}
-      style={{ zIndex: index }}
+      style={{ zIndex }}
     >
       <div className="stack-section__inner">{children}</div>
     </section>
@@ -145,25 +149,35 @@ function StackSection({
 }
 
 /* ============================================================
-   COMPONENTE: ContentSection
-   -> Sección larga en flujo normal (NO sticky por fuera). Al
-      venir justo después de una StackSection en el DOM, sigue
-      "cubriéndola" visualmente al hacer scroll con total
-      naturalidad; y como aquí no hay fijación exterior, se puede
-      recorrer todo su contenido sin que nada quede atrapado.
+   COMPONENTE: SlideSection
+   -> Para las secciones largas (La Boda, Barcelona, Galería,
+      FAQ). A propósito NO usan sticky/freeze: quedan en flujo
+      normal de scroll para que TODO su contenido sea siempre
+      alcanzable, sin importar cuánto mida.
+      La sensación de "deslizarse y montarse encima" de la
+      sección anterior se logra solo con CSS: un zIndex global
+      creciente (mismo contador que <StackSection>), una esquina
+      superior redondeada, una sombra proyectada hacia arriba y
+      un leve solape negativo (ver .slide-section en App.css).
+      Así, al hacer scroll, cada sección "sube" visualmente y
+      cubre el borde inferior de la anterior — mismo lenguaje
+      visual que la cuenta atrás — pero nada queda oculto ni
+      atrapado detrás de una fijación que no se libera.
    ============================================================ */
 
-function ContentSection({
+function SlideSection({
   id,
+  zIndex,
   className = '',
   children,
 }: {
   id?: string
+  zIndex: number
   className?: string
   children: React.ReactNode
 }) {
   return (
-    <section id={id} className={`content-section ${className}`}>
+    <section id={id} className={`slide-section ${className}`} style={{ zIndex }}>
       {children}
     </section>
   )
@@ -185,7 +199,9 @@ function StickySplit({
   return (
     <div className={`sticky-split ${reverse ? 'sticky-split--reverse' : ''}`}>
       <div className="sticky-split__sticky">
-        <div className="sticky-split__sticky-inner">{sticky}</div>
+        <Reveal className="sticky-split__sticky-inner" as="div">
+          {sticky}
+        </Reveal>
       </div>
 
       <div className="sticky-split__scroll">
@@ -352,6 +368,11 @@ function Navbar() {
 
 /* ============================================================
    APP
+   -> El zIndex de cada sección (corta o larga) se pasa a mano,
+      creciendo de 1 a 8 en el mismo orden en que aparecen en la
+      página. Es importante que sea un contador ÚNICO y GLOBAL
+      (no reiniciado por grupo) para que el "montado" visual de
+      unas secciones sobre otras sea siempre consistente.
    ============================================================ */
 
 function App() {
@@ -363,7 +384,7 @@ function App() {
 
       <div className="stack">
         {/* HERO */}
-        <StackSection id="inicio" index={1} interactive className="stack-section--hero">
+        <StackSection id="inicio" zIndex={1} interactive className="stack-section--hero">
           <section className="hero">
             <HeroPhoto />
 
@@ -392,7 +413,7 @@ function App() {
         </StackSection>
 
         {/* CUENTA ATRÁS */}
-        <StackSection id="cuenta-atras" index={2} interactive className="stack-section--center">
+        <StackSection id="cuenta-atras" zIndex={2} interactive className="stack-section--center">
           <Reveal>
             <h2 className="section__title">PREPARAD LAS GANAS, ESTO EMPIEZA EN…</h2>
             <SignatureDivider />
@@ -403,8 +424,10 @@ function App() {
         </StackSection>
       </div>
 
-      {/* LA BODA — flujo normal: se recorre entera con scroll */}
-      <ContentSection id="boda">
+      {/* LA BODA — flujo normal: se recorre entera con scroll, y
+          se "monta" visualmente sobre la cuenta atrás gracias al
+          zIndex mayor + esquina redondeada + sombra (ver App.css) */}
+      <SlideSection id="boda" zIndex={3}>
         <StickySplit
           sticky={
             <>
@@ -478,10 +501,10 @@ function App() {
             </div>,
           ]}
         />
-      </ContentSection>
+      </SlideSection>
 
       {/* BARCELONA — flujo normal: se recorre entera con scroll */}
-      <ContentSection id="barcelona">
+      <SlideSection id="barcelona" zIndex={4}>
         <StickySplit
           reverse
           sticky={
@@ -552,11 +575,11 @@ function App() {
             </div>,
           ]}
         />
-      </ContentSection>
+      </SlideSection>
 
       <div className="stack">
         {/* REGALOS */}
-        <StackSection id="regalos" index={1} interactive className="stack-section--center">
+        <StackSection id="regalos" zIndex={5} interactive className="stack-section--center">
           <Reveal>
             <h2 className="section__title">
               <Gift className="title-icon" size={32} strokeWidth={1.75} />
@@ -587,7 +610,7 @@ function App() {
       </div>
 
       {/* GALERÍA — flujo normal: se recorre entera con scroll */}
-      <ContentSection id="galeria">
+      <SlideSection id="galeria" zIndex={6}>
         <StickySplit
           sticky={
             <>
@@ -606,10 +629,10 @@ function App() {
             <PhotoPairInline idA="galeria-5" idB="galeria-6" />,
           ]}
         />
-      </ContentSection>
+      </SlideSection>
 
       {/* FAQ — flujo normal: se recorre entera con scroll */}
-      <ContentSection id="faq">
+      <SlideSection id="faq" zIndex={7}>
         <StickySplit
           reverse
           sticky={
@@ -642,11 +665,11 @@ function App() {
             />,
           ]}
         />
-      </ContentSection>
+      </SlideSection>
 
       <div className="stack">
         {/* RSVP FINAL */}
-        <StackSection id="rsvp" index={1} interactive className="stack-section--center">
+        <StackSection id="rsvp" zIndex={8} interactive className="stack-section--center">
           <Reveal>
             <RsvpCard />
           </Reveal>

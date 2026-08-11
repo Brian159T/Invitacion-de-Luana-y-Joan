@@ -127,7 +127,7 @@ ul {
 }
 
 .stack-section--center .signature-divider,
-.content-section--center .signature-divider {
+.slide-section--center .signature-divider {
   margin-left: auto;
   margin-right: auto;
 }
@@ -159,7 +159,7 @@ ul {
 .navbar {
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -426,9 +426,9 @@ ul {
 
 /* ============================================================
    SECCIONES CORTAS APILADAS (hero, cuenta atrás, regalos, rsvp)
-   -> Son las únicas que usan el efecto "stack": caben en un
-      viewport, así que quedarse "clavadas" mientras la siguiente
-      las cubre nunca oculta contenido.
+   -> Son las únicas que usan el efecto "stack" con sticky real:
+      caben en un viewport, así que quedarse "clavadas" mientras
+      la siguiente las cubre nunca oculta contenido.
    ============================================================ */
 
 .section {
@@ -498,21 +498,33 @@ ul {
 }
 
 /* ============================================================
-   SECCIONES LARGAS EN FLUJO NORMAL
-   (la boda, barcelona, galería, faq)
-   -> A propósito NO usan position:sticky en el contenedor
-      exterior: solo la columna izquierda de StickySplit es
-      sticky (y mide un viewport exacto), mientras la columna
-      derecha, mucho más alta, se desplaza con la página con
-      total normalidad. Así se ve TODO el contenido de cada
-      sección, panel a panel, sin que nada quede atrapado detrás
-      de una fijación que nunca se libera.
+   SLIDE SECTIONS (La Boda, Barcelona, Galería, FAQ)
+   -> Secciones largas: quedan en flujo normal de scroll, así que
+      TODO su contenido es siempre alcanzable y desplazable —
+      nada queda "congelado" ni oculto detrás de otra sección.
+      La sensación de "deslizar y montarse encima" de la anterior
+      se logra con z-index creciente (ver App.tsx), una esquina
+      superior redondeada, una sombra proyectada hacia arriba y
+      un leve solape negativo, imitando el mismo lenguaje visual
+      de las stack-section cortas pero sin usar sticky/freeze.
    ============================================================ */
 
-.content-section {
+.slide-section {
   position: relative;
   background: var(--bg);
-  padding: 56px 0;
+  padding: 72px 0 56px;
+  margin-top: -56px;
+  border-radius: 32px 32px 0 0;
+  box-shadow: 0 -36px 64px -22px rgba(var(--shadow), 0.22);
+}
+
+@media (max-width: 860px) {
+  .slide-section {
+    padding: 52px 0 40px;
+    margin-top: -32px;
+    border-radius: 22px 22px 0 0;
+    box-shadow: 0 -24px 44px -18px rgba(var(--shadow), 0.2);
+  }
 }
 
 /* ============================================================
@@ -526,7 +538,6 @@ ul {
   display: grid;
   grid-template-columns: 0.9fr 1.1fr;
   gap: 80px;
-  border-top: 1px solid var(--line);
 }
 
 .sticky-split--reverse {
@@ -879,6 +890,7 @@ ul {
    ============================================================ */
 
 .footer {
+  position: relative;
   border-top: 1px solid var(--line);
   padding: 64px 48px 40px;
   text-align: center;
