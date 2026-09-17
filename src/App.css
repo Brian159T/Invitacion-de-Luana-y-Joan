@@ -1,15 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:wght@400;500;600&family=Dancing+Script:wght@500;600&display=swap');
+@import url('https://fonts.cdnfonts.com/css/liontinela-realise');
+@import url('https://fonts.cdnfonts.com/css/minion-pro');
 
 /* ============================================================
    VARIABLES / PALETA
-   -> Rosa mucho más suave y frío (menos salmón/coral). Un único
-      tono de fondo recorre toda la web; --bg-soft es apenas un
-      matiz más profundo, reservado solo para tarjetas.
+   -> Fondo blanco en toda la web. Las tarjetas se distinguen con
+      borde y sombra; --bg-soft queda blanco como --bg pero se
+      mantiene como variable propia para poder ajustarlo después.
    ============================================================ */
 
 :root {
-  --bg: #fbf2ef;           /* rosa muy suave — fondo uniforme de toda la web */
-  --bg-soft: #f6e3dd;      /* rosa apenas más marcado — solo para tarjetas */
+  --bg: #ffffff;           /* blanco — fondo uniforme de toda la web */
+  --bg-soft: #ffffff;      /* blanco — tarjetas (se distinguen por borde y sombra) */
   --text: #40292b;         /* ciruela oscuro — texto principal */
   --text-soft: #7a5b5c;    /* siena apagado — texto secundario */
   --line: #e6cec7;         /* línea fina, muy suave */
@@ -135,8 +137,7 @@ ul {
 /* ============================================================
    TARJETA DE CONTENIDO
    -> Utilidad reutilizable: separa cada bloque de información
-      del fondo rosa con un panel algo más marcado, un borde muy
-      fino y una sombra suave.
+      del fondo blanco con un borde muy fino y una sombra suave.
    ============================================================ */
 
 .content-card {
@@ -215,6 +216,18 @@ ul {
   text-decoration: none;
 }
 
+.navbar__right {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+@media (max-width: 860px) {
+  .navbar__right {
+    gap: 12px;
+  }
+}
+
 @media (max-width: 860px) {
   .navbar__links {
     display: none;
@@ -283,6 +296,7 @@ ul {
 }
 
 .hero__title {
+  font-family: 'Liontinela Realise', var(--font-display), serif;
   font-size: clamp(40px, 9vw, 88px);
   letter-spacing: 0.03em;
   line-height: 1.15;
@@ -300,9 +314,10 @@ ul {
 
 .hero__date {
   margin-top: 18px;
-  font-family: var(--font-script);
-  font-size: 28px;
+  font-family: 'Minion Pro', var(--font-display), serif;
+  font-size: 30px;
   color: var(--bg);
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.25);
 }
 
 .hero__place {
@@ -931,6 +946,111 @@ ul {
   margin-top: 28px;
   font-size: 13px;
   opacity: 0.7;
+}
+
+/* ============================================================
+   IDIOMA — selector de idioma (català / castellano / english)
+   -> Al primer acceso (sin idioma guardado) una capa a pantalla
+      completa pide al usuario que elija. El mismo selector queda
+      disponible en navbar y footer para cambiar de idioma.
+   ============================================================ */
+
+.language-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.language-overlay__card {
+  text-align: center;
+  max-width: 520px;
+  width: 100%;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  box-shadow: 0 24px 60px -20px rgba(var(--shadow), 0.22);
+  padding: 60px 48px;
+}
+
+.language-overlay__title {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 4vw, 34px);
+  color: var(--text);
+}
+
+.language-overlay__sub {
+  margin-top: 12px;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--text-soft);
+}
+
+.language-overlay__options {
+  margin-top: 32px;
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.language-overlay__option {
+  border: 1px solid var(--cta);
+  background: transparent;
+  color: var(--cta);
+  padding: 12px 26px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.language-overlay__option:hover {
+  background: var(--cta);
+  color: #fff;
+}
+
+.language-switcher {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.language-switcher__option {
+  border: none;
+  background: transparent;
+  color: var(--text-soft);
+  font-family: var(--font-body);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 4px 6px;
+}
+
+.language-switcher__option:hover {
+  color: var(--cta);
+}
+
+.language-switcher__option--active {
+  color: var(--cta);
+  font-weight: 700;
+}
+
+.footer__lang {
+  justify-content: center;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 640px) {
+  .language-overlay__card {
+    padding: 44px 24px;
+  }
 }
 
 /* ============================================================
