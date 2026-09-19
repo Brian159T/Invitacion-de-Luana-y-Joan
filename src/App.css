@@ -260,28 +260,16 @@ ul {
   position: absolute;
   inset: 0;
   z-index: 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .hero-image {
   width: 100%;
   height: 100%;
-  display: block;
-  object-fit: cover;
-  object-position: center 28%;
-}
-
-.hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: linear-gradient(
-    to top,
-    rgba(var(--shadow), 0.82) 0%,
-    rgba(var(--shadow), 0.4) 38%,
-    rgba(var(--shadow), 0) 68%
-  );
-  pointer-events: none;
+  object-fit: contain;
 }
 
 .hero__content {
@@ -290,18 +278,18 @@ ul {
   width: 100%;
   max-width: var(--container);
   margin: 0 auto;
-  padding: 40px 24px 64px;
+  padding: 24px 24px 12px;
   text-align: center;
-  color: var(--bg);
+  color: var(--text);
 }
 
 .hero__title {
   font-family: 'Liontinela Realise', var(--font-display), serif;
-  font-size: clamp(40px, 9vw, 88px);
+  font-size: clamp(26px, 5.5vw, 54px);
   letter-spacing: 0.03em;
   line-height: 1.15;
-  color: var(--bg);
-  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.25);
+  color: #1a1a1a;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.95), 0 2px 6px rgba(255, 255, 255, 0.9);
 }
 
 .hero__amp {
@@ -309,15 +297,16 @@ ul {
   font-style: italic;
   font-size: 0.5em;
   margin: 4px 0;
-  color: #e3b79a;
+  color: #1a1a1a;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.95), 0 2px 6px rgba(255, 255, 255, 0.9);
 }
 
 .hero__date {
-  margin-top: 18px;
+  margin-top: 14px;
   font-family: 'Minion Pro', var(--font-display), serif;
-  font-size: 30px;
-  color: var(--bg);
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.25);
+  font-size: 22px;
+  color: #1a1a1a;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.9);
 }
 
 .hero__place {
@@ -325,7 +314,8 @@ ul {
   font-size: 16px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--bg);
+  color: #1a1a1a;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.95), 0 2px 6px rgba(255, 255, 255, 0.9);
   opacity: 0.85;
 }
 
@@ -333,9 +323,10 @@ ul {
   display: inline-block;
   margin-top: 28px;
   padding: 12px 30px;
-  border: 1px solid var(--bg);
+  border: 1px solid #b58a5a;
   border-radius: 999px;
-  color: var(--bg);
+  color: #1a1a1a;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.9);
   font-size: 14px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -343,8 +334,8 @@ ul {
 }
 
 .btn:hover {
-  background: var(--bg);
-  color: var(--text);
+  background: #b58a5a;
+  color: var(--bg);
   text-decoration: none;
 }
 
@@ -363,20 +354,16 @@ ul {
     min-height: 88svh;
   }
 
-  .hero-image {
-    object-position: center 22%;
-  }
-
   .hero__content {
-    padding: 28px 20px 48px;
+    padding: 28px 20px 16px;
   }
 
   .hero__title {
-    font-size: clamp(34px, 12vw, 56px);
+    font-size: clamp(26px, 8vw, 40px);
   }
 
   .hero__date {
-    font-size: 22px;
+    font-size: 19px;
   }
 
   .hero__place {
@@ -1075,7 +1062,16 @@ ul {
 }
 
 .stack-section--hero {
-  background: var(--text);
+  background: var(--bg);
+}
+
+.stack-section--hero::after {
+  opacity: 0;
+}
+
+.stack-section--hero .stack-section__inner {
+  filter: none;
+  transform: none;
 }
 
 .stack-section--center {

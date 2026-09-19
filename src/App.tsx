@@ -1,6 +1,6 @@
 import { Plane, Calendar, Gift, Camera, HelpCircle } from 'lucide-react'
 import './App.css'
-import heroImage from './assets/L y J.png'
+import heroImage from './assets/Luana i Joan (1)-03.jpg.jpeg'
 import {
   createContext,
   useCallback,
@@ -828,7 +828,7 @@ function AppContent() {
               </Reveal>
 
               <Reveal delay={350}>
-                <p className="hero__place">Santa Susanna · Barcelona</p>
+                <p className="hero__place">Santa Susanna · Barcelonaaa</p>
               </Reveal>
 
               <Reveal delay={500}>

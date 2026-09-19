@@ -87,6 +87,17 @@ La secuencia de zIndex en `App()` es 1..8 en orden de aparición. Debe ser un co
 - `Faq` → elemento `<details>/<summary>`.
 - `RsvpCard` → tarjeta de cierre con enlace a RSVP e IBAN.
 
+### Hero (configuración visual actual)
+
+- Imagen de portada: `heroImage` → `./assets/Luana i Joan (1)-03.jpg.jpeg` (576×884, vertical). La imagen `Luana i Joan (1)-02.jpg.jpeg` existe en `assets` pero **no se usa** (fue imagen de tarjeta al pie, ya retirada).
+- La imagen se muestra **estática y completa**: `.hero-image-wrap` es `absolute inset: 0` con flex centrado (ambos ejes) y `.hero-image` ocupa `width: 100% / height: 100%` con `object-fit: contain`, así la foto se ve entera, sin recortes, centrada y sin ningún efecto de zoom/escala al hacer scroll (no hay `transform: scale`, `animation-timeline: scroll()` ni JS que cambie su tamaño).
+- Móvil aplica la misma regla (`object-fit: contain` en 88svh/82svh de alto del hero); no sobreescribir.
+- El hero hereda de `.stack-section--interactive` un `transform: scale()` según `--cover`, pero `.stack-section--hero .stack-section__inner` lo anula con `transform: none` (además de `filter: none`) para que la imagen no se mezcle ni escale.
+- **Resolución de la imagen (PENDIENTE, calidad):** `heroImage` es **576×884 px**, baja para un hero a pantalla completa (100svh). Con `object-fit: contain` se escala hacia arriba en pantallas grandes: aceptable en móvil y monitores 1x, pero **borrosa/pixelada en retina (2x) y 4K** (el alto nativo 884px está muy por debajo del píxel físico mostrado). Pendiente sustituirla por una versión de ≥1152×1768 px (idealmente >1800px de alto) manteniendo el nombre/import de `heroImage` para no tocar código.
+- Texto del hero (LUANA & JOAN, fecha, lugar, botón RSVP) en color `#1a1a1a` con `text-shadow` blanco reforzado (título, `&` y lugar con `0 0 8px rgba(255, 255, 255, 0.95), 0 2px 6px rgba(255, 255, 255, 0.9)`; fecha y `.btn` con `0 0 4px rgba(255, 255, 255, 0.9)`), hardcodeado en `.hero__title`, `.hero__amp`, `.hero__date`, `.hero__place` y `.btn`.
+- Título y fecha son pequeños y quedan pegados al pie de la imagen (`.hero__content` con `padding-bottom: 12px` en desktop, `16px` en móvil).
+- El hero NO se oscurece al hacer scroll: `.stack-section--hero` tiene fondo `var(--bg)`, su `::after` con `opacity: 0` y su `.stack-section__inner` con `filter: none` (anulan el efecto de oscurecimiento del stack).
+
 ### Datos sensibles a completar (placeholders)
 
 Varios campos son provisionales: IBAN (`ESXX XXXX...`), Bizum (`600 000 000`), teléfonos del footer (`+34 XXX XX XX XX`), respuesta de FAQ sobre niños, hoteles recomendados y consejos de la guía de Barcelona.
