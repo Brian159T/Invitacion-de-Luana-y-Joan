@@ -171,17 +171,17 @@ ul {
 }
 
 .navbar__logo {
-  font-family: var(--font-script);
-  font-size: 26px;
+  font-family: 'Liontinela Realise', var(--font-script);
+  font-size: 18px;
+  line-height: 1;
   color: var(--text);
-  border: 1px solid var(--gold);
-  border-radius: 50%;
-  width: 54px;
-  height: 54px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  border-radius: 50%;
+  border: none;
+  text-decoration: none;
 }
 
 .navbar__links {
@@ -398,32 +398,18 @@ ul {
   text-transform: uppercase;
 }
 
-.photo-pair-inline {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+.image-placeholder--qr {
+  width: 180px;
+  height: 180px;
+  min-width: 0;
+  min-height: 0;
+  margin: 28px auto 0;
 }
 
-.photo-pair-inline .image-placeholder {
-  aspect-ratio: 3 / 4;
-  min-height: 260px;
-}
-
-.photo-pair-inline .image-placeholder:first-child {
-  align-self: start;
-}
-
-.photo-pair-inline .image-placeholder:last-child {
-  align-self: end;
-}
-
-@media (max-width: 640px) {
-  .photo-pair-inline {
-    grid-template-columns: 1fr;
-  }
-  .photo-pair-inline .image-placeholder {
-    align-self: stretch !important;
-  }
+.image-placeholder--gallery {
+  width: 100%;
+  max-width: 260px;
+  height: 260px;
 }
 
 /* ============================================================
@@ -491,6 +477,10 @@ ul {
   font-size: 24px;
   margin-top: 10px;
   color: var(--text-soft);
+}
+
+.section__script--liona {
+  font-family: 'Liontinela Realise', var(--font-display), serif;
 }
 
 @media (max-width: 860px) {
@@ -639,10 +629,6 @@ ul {
   color: var(--text);
 }
 
-.day-card .photo-pair-inline {
-  margin-top: 28px;
-}
-
 /* ============================================================
    CUENTA ATRÁS
    ============================================================ */
@@ -726,74 +712,6 @@ ul {
 }
 
 /* ============================================================
-   CTA CARD (tarjeta "Una última cosa / Confirmar asistencia")
-   ============================================================ */
-
-.cta-card {
-  position: relative;
-  background: var(--bg-soft);
-  border: 1px solid var(--line);
-  box-shadow: 0 20px 50px rgba(var(--shadow), 0.16);
-  padding: 64px 56px;
-  text-align: center;
-  max-width: 520px;
-  margin: 0 auto;
-}
-
-.cta-card__eyebrow {
-  font-family: var(--font-script);
-  font-size: 26px;
-  color: var(--text-soft);
-  margin: 0 0 20px;
-}
-
-.cta-card__title {
-  font-size: clamp(28px, 3vw, 36px);
-  letter-spacing: 0.02em;
-  line-height: 1.25;
-}
-
-.cta-card__title a {
-  color: var(--cta);
-  text-decoration: underline;
-  text-underline-offset: 6px;
-  text-decoration-color: var(--cta);
-}
-
-.cta-card__title a:hover {
-  color: var(--cta-hover);
-  text-decoration-color: var(--cta-hover);
-}
-
-.cta-card__sub {
-  font-family: var(--font-script);
-  font-size: 23px;
-  margin-top: 26px;
-  color: var(--text-soft);
-}
-
-.cta-card__note {
-  margin-top: 16px;
-  font-size: 16px;
-  color: var(--text-soft);
-}
-
-.cta-card__iban {
-  margin-top: 8px;
-  font-family: var(--font-display);
-  font-size: 19px;
-  letter-spacing: 0.05em;
-  color: var(--text);
-}
-
-@media (max-width: 860px) {
-  .cta-card {
-    max-width: 100%;
-    padding: 44px 28px;
-  }
-}
-
-/* ============================================================
    REGALOS
    ============================================================ */
 
@@ -838,56 +756,6 @@ ul {
 }
 
 /* ============================================================
-   FAQ
-   ============================================================ */
-
-.faq-item {
-  background: var(--bg-soft);
-  border: 1px solid var(--line);
-  box-shadow: 0 16px 34px -16px rgba(var(--shadow), 0.16);
-  padding: 26px 32px;
-}
-
-.faq-item summary {
-  cursor: pointer;
-  font-family: var(--font-display);
-  font-size: 20px;
-  list-style: none;
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-}
-
-.faq-item summary::-webkit-details-marker {
-  display: none;
-}
-
-.faq-item summary::before {
-  content: '+';
-  display: inline-block;
-  width: 16px;
-  color: var(--cta);
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.faq-item[open] summary::before {
-  content: '–';
-}
-
-.faq-item p {
-  margin: 14px 0 0 28px;
-  color: var(--text-soft);
-  font-size: 17px;
-}
-
-@media (max-width: 640px) {
-  .faq-item {
-    padding: 20px 22px;
-  }
-}
-
-/* ============================================================
    FOOTER
    ============================================================ */
 
@@ -901,8 +769,8 @@ ul {
 }
 
 .footer__logo {
-  font-family: var(--font-script);
-  font-size: 24px;
+  font-family: 'Liontinela Realise', var(--font-display), serif;
+  font-size: 28px;
   color: var(--text);
   margin-bottom: 24px;
 }

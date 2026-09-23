@@ -1,4 +1,4 @@
-import { Plane, Calendar, Gift, Camera, HelpCircle } from 'lucide-react'
+import { Plane, Calendar, Gift, Camera } from 'lucide-react'
 import './App.css'
 import heroImage from './assets/Luana i Joan (1)-03.jpg.jpeg'
 import {
@@ -10,6 +10,7 @@ import {
   useRef,
   useState,
 } from 'react'
+
 
 /* ============================================================
    CONFIGURACIÓN RÁPIDA
@@ -49,7 +50,7 @@ const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'boda.title': 'LA BODA',
     'boda.script': 'Dos días para celebrarlo',
     'boda.viernes.eyebrow': 'Viernes 18 de Junio',
-    'boda.viernes.title': 'Comida con la familia',
+    'boda.viernes.title': 'Almuerzo Rome Hielos',
     'boda.fecha': 'Fecha:',
     'boda.horario': 'Horario:',
     'boda.lugar': 'Lugar:',
@@ -659,41 +660,6 @@ function HeroPhoto() {
   )
 }
 
-function PhotoPairInline({ idA, idB }: { idA: string; idB: string }) {
-  return (
-    <div className="photo-pair-inline">
-      <div className="image-placeholder" id={idA}>
-        <span>Foto {idA}</span>
-      </div>
-      <div className="image-placeholder" id={idB}>
-        <span>Foto {idB}</span>
-      </div>
-    </div>
-  )
-}
-
-/* ============================================================
-   COMPONENTE: RsvpCard
-   ============================================================ */
-
-function RsvpCard() {
-  const { t } = useLanguage()
-
-  return (
-    <div className="cta-card">
-      <p className="cta-card__eyebrow">{t('rsvp.eyebrow')}</p>
-      <h3 className="cta-card__title">
-        <a href={RSVP_FORM_URL} target="_blank" rel="noreferrer">
-          {t('rsvp.confirm')}
-        </a>
-      </h3>
-      <p className="cta-card__sub">{t('rsvp.sub')}</p>
-      <p className="cta-card__note">{t('rsvp.note')}</p>
-      <p className="cta-card__iban">ESXX XXXX XXXX XXXX XXXX XXXX</p>
-    </div>
-  )
-}
-
 /* ============================================================
    COMPONENTE: cuenta atrás
    ============================================================ */
@@ -750,19 +716,6 @@ function Countdown() {
 }
 
 /* ============================================================
-   COMPONENTE: FAQ
-   ============================================================ */
-
-function Faq({ question, answer }: { question: string; answer: string }) {
-  return (
-    <details className="faq-item">
-      <summary>{question}</summary>
-      <p>{answer}</p>
-    </details>
-  )
-}
-
-/* ============================================================
    NAVBAR
    ============================================================ */
 
@@ -772,7 +725,7 @@ function Navbar() {
   return (
     <header className="navbar">
       <a className="navbar__logo" href="#inicio" aria-label="Luana y Joan">
-        L+J
+        L&nbsp;J
       </a>
 
       <nav className="navbar__links">
@@ -780,7 +733,6 @@ function Navbar() {
         <a href="#barcelona">{t('nav.barcelona')}</a>
         <a href="#regalos">{t('nav.regalos')}</a>
         <a href="#galeria">{t('nav.galeria')}</a>
-        <a href="#faq">{t('nav.preguntas')}</a>
       </nav>
 
       <div className="navbar__right">
@@ -862,7 +814,7 @@ function AppContent() {
               <p className="sticky-split__eyebrow">{t('boda.eyebrow')}</p>
               <h2 className="section__title">{t('boda.title')}</h2>
               <SignatureDivider />
-              <p className="section__script">{t('boda.script')}</p>
+              <p className="section__script section__script--liona">{t('boda.script')}</p>
             </>
           }
           panels={[
@@ -893,7 +845,6 @@ function AppContent() {
                   <strong>{t('boda.dresscode')}</strong> {t('boda.viernes.dressValue')}
                 </li>
               </ul>
-              <PhotoPairInline idA="viernes-1" idB="viernes-2" />
             </div>,
 
             <div className="content-card day-card">
@@ -924,7 +875,6 @@ function AppContent() {
                   <strong>{t('boda.horarios')}</strong> {t('boda.horariosValue')}
                 </li>
               </ul>
-              <PhotoPairInline idA="sabado-1" idB="sabado-2" />
             </div>,
           ]}
         />
@@ -1019,6 +969,10 @@ function AppContent() {
                 <span className="gift-box__value">600 000 000</span>
               </div>
             </div>
+
+            <div className="image-placeholder image-placeholder--qr" id="qr-regalos">
+              <span>QR</span>
+            </div>
           </Reveal>
         </StackSection>
       </div>
@@ -1038,56 +992,22 @@ function AppContent() {
             </>
           }
           panels={[
-            <PhotoPairInline idA="galeria-1" idB="galeria-2" />,
-            <PhotoPairInline idA="galeria-3" idB="galeria-4" />,
-            <PhotoPairInline idA="galeria-5" idB="galeria-6" />,
+            <div className="image-placeholder image-placeholder--qr image-placeholder--gallery" id="qr-galeria">
+              <span>QR</span>
+            </div>,
           ]}
         />
       </SlideSection>
-
-      {/* FAQ — flujo normal: se recorre entera con scroll */}
-      <SlideSection id="faq" zIndex={7}>
-        <StickySplit
-          reverse
-          sticky={
-            <>
-              <p className="sticky-split__eyebrow">{t('faq.eyebrow')}</p>
-              <h2 className="section__title">
-                <HelpCircle className="title-icon" size={32} strokeWidth={1.75} />
-                {t('faq.title')}
-              </h2>
-              <SignatureDivider />
-              <p className="section__script">{t('faq.script')}</p>
-            </>
-          }
-          panels={[
-            <Faq question={t('faq.companiero.q')} answer={t('faq.companiero.a')} />,
-            <Faq question={t('faq.dieta.q')} answer={t('faq.dieta.a')} />,
-            <Faq question={t('faq.ninos.q')} answer={t('faq.ninos.a')} />,
-            <Faq question={t('faq.autobus.q')} answer={t('faq.autobus.a')} />,
-          ]}
-        />
-      </SlideSection>
-
-      <div className="stack">
-        {/* RSVP FINAL */}
-        <StackSection id="rsvp" zIndex={8} interactive className="stack-section--center">
-          <Reveal>
-            <RsvpCard />
-          </Reveal>
-        </StackSection>
-      </div>
 
       {/* FOOTER (fuera del stack, no se apila) */}
       <footer className="footer">
-        <div className="footer__logo">L+J</div>
+        <div className="footer__logo">LJ</div>
 
         <nav className="footer__links">
           <a href="#boda">{t('nav.boda')}</a>
           <a href="#barcelona">{t('nav.barcelona')}</a>
           <a href="#regalos">{t('nav.regalos')}</a>
           <a href="#galeria">{t('nav.galeria')}</a>
-          <a href="#faq">{t('nav.preguntas')}</a>
         </nav>
 
         <LanguageSwitcher className="footer__lang" />
