@@ -1,6 +1,6 @@
 import { Plane, Calendar, Gift, Camera } from 'lucide-react'
 import './App.css'
-import heroImage from './assets/Luana i Joan (1)-03.jpg.jpeg'
+import heroImage from './assets/Pajaros areglados.jfif'
 import {
   createContext,
   useCallback,
@@ -41,7 +41,7 @@ const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'nav.preguntas': 'Preguntas',
     'nav.rsvp': 'Confirmar asistencia',
     'hero.date': 'Sábado 19 de Junio, 2027',
-    'countdown.title': 'PREPARAD LAS GANAS, ESTO EMPIEZA EN…',
+    'countdown.title': 'QUE EMPIECE LA CUENTA REGRESIVA…',
     'countdown.dias': 'Días',
     'countdown.horas': 'Horas',
     'countdown.minutos': 'Minutos',
@@ -144,7 +144,7 @@ const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'boda.title': 'EL CASAMENT',
     'boda.script': 'Dos dies per celebrar-ho',
     'boda.viernes.eyebrow': 'Divendres 18 de juny',
-    'boda.viernes.title': 'Dinar amb la família',
+    'boda.viernes.title': 'Dinar Rome Hielos',
     'boda.fecha': 'Data:',
     'boda.horario': 'Horari:',
     'boda.lugar': 'Lloc:',
@@ -240,7 +240,7 @@ const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'boda.title': 'THE WEDDING',
     'boda.script': 'Two days of celebration',
     'boda.viernes.eyebrow': 'Friday 18 June',
-    'boda.viernes.title': 'Family lunch',
+    'boda.viernes.title': 'Lunch Rome Hielos',
     'boda.fecha': 'Date:',
     'boda.horario': 'Schedule:',
     'boda.lugar': 'Venue:',
@@ -780,14 +780,10 @@ function AppContent() {
               </Reveal>
 
               <Reveal delay={350}>
-                <p className="hero__place">Santa Susanna · Barcelonaaa</p>
+                <p className="hero__place">Santa Susanna · Barcelona</p>
               </Reveal>
 
-              <Reveal delay={500}>
-                <a className="btn btn--cta" href={RSVP_FORM_URL} target="_blank" rel="noreferrer">
-                  RSVP
-                </a>
-              </Reveal>
+              
             </div>
           </section>
         </StackSection>
