@@ -32,6 +32,7 @@ Fuera del stack (no se apila): `<footer>` con logo "LJ", enlaces, selector de id
 - **Logo footer**: `LJ` con **Liontinela Realise**.
 - **"Dos días para celebrarlo"** (script de La Boda) usa la clase `section__script--liona` → **Liontinela Realise**.
 - **Rome Hielos** se trata como **nombre propio**: no se traduce ni se sustituye (es: "Almuerzo Rome Hielos", ca: "Dinar Rome Hielos", en: "Lunch Rome Hielos").
+- **Traducciones verificadas**: todas las claves tienen las tres lenguas; `hero.date` es correcta (19/06/2027 es sábado) y los nombres propios (Mas Juli, Mare de Déu de Gràcia, Pura Brasa, Rome Hielos) se mantienen intactos en los tres idiomas.
 - **Favicon**: `icono de la pestana redondeado.png` (en `src/assets`, generado con esquinas redondeadas y transparencia, ~108px de radio sobre 712×434). Se referenció en `index.html`. Se eliminó `src/assets/vite.svg`.
 
 ## 3. Stack
@@ -49,8 +50,10 @@ Fuera del stack (no se apila): `<footer>` con logo "LJ", enlaces, selector de id
   - `Liontinela Realise` — títulos protagonistas: hero (LUANA & JOAN), script "Dos días para celebrarlo", logos navbar y footer.
   - `Minion Pro` — fecha del hero.
 - **Requiere conexión a internet**: si el CDN cae o se bloquea, se usa la fuente de respaldo (`Playfair Display` / serif).
-- Seguridad: ficheros estáticos (woff/woff2), sin ejecución de código, HTTPS. Riesgos reales: dependencia del CDN y privacidad (IP/agente del visitante llega al servidor, igual que Google Fonts).
-- Licencias: `Minion Pro` es comercial (Adobe); los CDN a veces la sirven sin licencia clara. Aceptable en este proyecto de boda (uso personal/no comercial). Alternativa 100% segura: self-hosting en `src/assets/fonts/` con `@font-face` propio.
+- **Origen**: no están en el repositorio ni se instalaron manualmente; se cargan en tiempo de ejecución desde un CDN de terceros (equivalente a Google Fonts en cuanto a modelo de carga).
+- **Seguridad / ¿ejecutan código?** **No, en ninguna forma**: los `.woff/.woff2` son glicofos estáticos que el navegador solo renderiza; no hay scripts, macros ni ejecución. Conexión HTTPS.
+- **Riesgos reales** (no son "ejecución", pero existen): (1) dependencia — si el CDN cae o la red lo bloquea, se usa el respaldo y el aspecto cambia; (2) privacidad — la IP y el agente del visitante llegan a ese servidor; (3) licencia poco clara.
+- Licencias: `Minion Pro` es comercial (Adobe); los CDN a veces la sirven sin licencia clara. Aceptable en este proyecto de boda (uso personal/no comercial). Alternativa 100% segura y sin fugas: **self-hosting** descargando los `.woff2/.woff` a `src/assets/fonts/` y declarando `@font-face` propios.
 
 ### Mapa de familias CSS
 
@@ -82,7 +85,7 @@ public/
   icons.svg                 # sprite de iconos (sin uso actual)
 ```
 
-Assets disponibles (no todos en uso): `heroImage` (`Luana i Joan (1)-03.jpg.jpeg`, usada en el hero), `Luana i Joan (1)-02.jpg.jpeg` (retirada), `luana y joan mayor resolucion.jfif` (+2), `hero.png`, `L y J.png`, `L Y J NAV.jfif`, `Luana i Joan formulario.jpeg`, `pajaros areglados*.jfif`, `react.svg`, `icono de la pestana.jpeg` (origen del favicon), `icono de la pestana redondeado.png` (favicon actual).
+Assets disponibles (no todos en uso): `Pajaros areglados.jfif` (hero en escritorio), `Luana i Joan (1)-03.jpg.jpeg` (hero en móvil), `Luana i Joan (1)-02.jpg.jpeg` (retirada), `luana y joan mayor resolucion.jfif` (+2), `hero.png`, `L y J.png`, `L Y J NAV.jfif`, `Luana i Joan formulario.jpeg`, `pajaros areglados2.jfif`/`3` (sin uso), `react.svg`, `icono de la pestana.jpeg` (origen del favicon), `icono de la pestana redondeado.png` (favicon actual).
 
 ## 6. Arquitectura de App.tsx
 
@@ -100,6 +103,14 @@ Todo vive en un único archivo `src/App.tsx` (~1030 líneas). Organización obli
 - `useLanguage()` → `{ lang, setLang, t }`; `t('clave')` traduce al idioma activo.
 - Primer acceso sin idioma guardado → `LanguagePicker` (capa a pantalla completa). Después se cambia desde `LanguageSwitcher` (navbar y footer).
 - Nombres propios no se traducen y van igual en las tres lenguas (LUANA & JOAN, Rome Hielos, Mas Juli, Mare de Déu de Gràcia, Pura Brasa, IBAN, Bizum…).
+
+**Cómo se aplican las traducciones:** cada texto visible importante tiene su clave en las tres lenguas; si el usuario elige `ca`, `es` o `en` (en el picker inicial o el switcher), la elección se guarda en `localStorage` (`LANG_STORAGE_KEY`) y `t('clave')` devuelve el valor del idioma activo en cada render.
+
+**Textos que quedan fuera de `TRANSLATIONS` (hardcodeados, a propósito):**
+- Nombres propios (LUANA & JOAN, Roma Hielos, Mas Juli, IBAN, Bizum, teléfonos del footer…).
+- Textos idénticos en las tres lenguas: botón `RSVP`, selector de idioma (CAT/ESP/ENG), textos `QR` de los placeholders.
+- Sin idioma gestionado: la capa inicial "¿Qué idioma prefieres?" (muestra los tres), el lugar del hero ("Santa Susanna · Barcelonaaa" — con typo `Barcelonaaa` aún sin corregir).
+- **Verificado:** `hero.date` es correcta en las tres lenguas y la fecha es real (19/06/2027 cae en sábado): es "Sábado 19 de Junio, 2027", ca "Dissabte 19 de juny, 2027", en "Saturday 19 June, 2027".
 
 ### Sistema de "apilado" de secciones (CRÍTICO, no romper)
 
@@ -123,10 +134,11 @@ Componentes eliminados en esta fase (no reintroducir sin motivo): `PhotoPairInli
 
 ### Hero (configuración visual actual)
 
-- Imagen de portada: `heroImage` → `./assets/Luana i Joan (1)-03.jpg.jpeg` (576×884, vertical).
+- Imagen de portada (dos versiones por ancho de pantalla, vía `<picture>` en `HeroPhoto`): escritorio (>720px) `heroImage` → `./assets/Pajaros areglados.jfif`; móvil (≤720px) `heroImageMobile` → `./assets/Luana i Joan (1)-03.jpg.jpeg` (576×884, vertical, la que mejor encaja en pantalla de teléfono).
+- `.hero-image-wrap picture` lleva `display: flex; width/height: 100%` para que el `height: 100%` + `object-fit: contain` de `.hero-image` se resuelva bien (un `<picture>` inline tendría alto automático).
 - Se muestra **estática y completa**: `.hero-image-wrap` es `absolute inset: 0` con flex centrado (ambos ejes) y `.hero-image` con `width/height: 100%` y `object-fit: contain`. Sin recortes ni zoom al hacer scroll.
 - El hero hereda de `.stack-section--interactive` un `transform: scale()` según `--cover`, pero `.stack-section--hero .stack-section__inner` lo anula (`transform: none` y `filter: none`) para que la imagen no se mezcle ni escale.
-- **PENDIENTE (resolución):** 576×884 es baja para 100svh; con `object-fit: contain` se escala hacia arriba y se ve borrosa en retina (2x) y 4K. Sustituir por versión ≥1152×1768 px (ideal >1800px de alto) manteniendo el nombre/import de `heroImage`.
+- **PENDIENTE (resolución):** escritorio 1152×928 y móvil 576×884; con `object-fit: contain` se escalan hacia arriba y se ven borrosas en retina (2x) y 4K. Sustituir por versiones ≥2× (escritura ≥2304px de ancho, móvil ≥1152×1768 px) manteniendo los nombres/imports de `heroImage` y `heroImageMobile`.
 - Texto del hero en `#1a1a1a` con `text-shadow` blanco reforzado (título, `&` y lugar: `0 0 8px rgba(255,255,255,0.95), 0 2px 6px rgba(255,255,255,0.9)`; fecha y `.btn`: `0 0 4px rgba(255,255,255,0.9)`). Hardcodeado en `.hero__title`, `.hero__amp`, `.hero__date`, `.hero__place` y `.btn`.
 - Título y fecha pegados al pie de la imagen (`.hero__content` con `padding-bottom: 12px` desktop, `16px` móvil).
 - El hero NO se oscurece al hacer scroll (fondo `var(--bg)`, `::after` con `opacity: 0`, `.stack-section__inner` con `filter: none`).

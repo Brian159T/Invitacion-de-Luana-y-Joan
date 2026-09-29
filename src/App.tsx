@@ -1,6 +1,7 @@
 import { Plane, Calendar, Gift, Camera } from 'lucide-react'
 import './App.css'
 import heroImage from './assets/Pajaros areglados.jfif'
+import heroImageMobile from './assets/Luana i Joan (1)-03.jpg.jpeg'
 import {
   createContext,
   useCallback,
@@ -655,7 +656,10 @@ function SignatureDivider() {
 function HeroPhoto() {
   return (
     <div className="hero-image-wrap">
-      <img src={heroImage} alt="Luana y Joan" className="hero-image" />
+      <picture>
+        <source media="(max-width: 720px)" srcSet={heroImageMobile} />
+        <img src={heroImage} alt="Luana y Joan" className="hero-image" />
+      </picture>
     </div>
   )
 }

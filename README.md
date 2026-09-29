@@ -79,4 +79,4 @@ Invitación web de boda para Luana y Joan (multilingüe: català, castellano, in
 
 ### PENDIENTE — resolución de la imagen del hero
 
-La imagen de portada (`src/assets/Luana i Joan (1)-03.jpg.jpeg`) es **576×884 px**, baja para un hero a pantalla completa. Se ve aceptable en móvil y monitores 1x, pero **borrosa/pixelada en retina (2x) y 4K**. Sustituir por una versión de ≥1152×1768 px (idealmente >1800px de alto) manteniendo el nombre/import de `heroImage` para no tocar código.
+Las dos imágenes de portada (`src/assets/Pajaros areglados.jfif` en escritorio, 1152×928 px, y `src/assets/Luana i Joan (1)-03.jpg.jpeg` en móvil, 576×884 px) son bajas para un hero a pantalla completa: aceptables en monitores 1x, pero **borrosas/pixeladas en retina (2x) y 4K**. Sustituirlas por versiones ≥2× manteniendo los imports `heroImage` y `heroImageMobile` para no tocar código.
