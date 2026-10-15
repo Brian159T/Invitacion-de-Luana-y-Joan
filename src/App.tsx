@@ -836,7 +836,7 @@ function AppContent() {
 
       <div className="stack">
         {/* REGALOS */}
-        <StackSection id="regalos" zIndex={5} interactive className="stack-section--center">
+        <StackSection id="regalos" zIndex={5} className="stack-section--center stack-section--no-effect">
           <Reveal>
             <h2 className="section__title">
               <Gift className="title-icon" size={32} strokeWidth={1.75} />

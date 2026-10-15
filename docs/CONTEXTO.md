@@ -33,6 +33,8 @@ Fuera del stack (no se apila): `<footer>` con logo "LJ", enlaces, selector de id
 - **Rome Hielos** se trata como **nombre propio**: no se traduce ni se sustituye (ca: "Dinar Rome Hielos", en: "Lunch Rome Hielos").
 - **Traducciones verificadas**: todas las claves tienen las dos lenguas (ca/en) y los nombres propios (Mas Juli, Mare de Déu de Gràcia, Pura Brasa, Rome Hielos) se mantienen intactos. El castellano se eliminó; el catalán es el idioma por defecto (`'ca'` en todos los fallbacks, `lang="ca"` en `index.html`).
 - **Favicon**: `icono de la pestana redondeado.png` (en `src/assets`, generado con esquinas redondeadas y transparencia, ~108px de radio sobre 712×434). Se referenció en `index.html`. Se eliminó `src/assets/vite.svg`.
+- **Fuente Source Serif 4**: las tres fechas de La Boda (eyebrow fija "18 i 19 de juny de 2027" y eyebrows de las tarjetas "Divendres 18 de juny" / "Dissabte 19 de juny") usan **Source Serif 4**, instalada por npm (`@fontsource/source-serif-4`, subsets `latin-400` y `latin-600` importados en `src/main.tsx`) y aplicada en `App.css` bajo `#boda`. Es auto-hospedada (sin CDN).
+- **Regalos sin efecto de apilado**: por ser la última sección antes del footer, no lleva `interactive`, es `position: static`, sin sombra y sin oscurecimiento (`stack-section--no-effect`). El footer le sigue en flujo normal.
 
 ## 3. Stack
 
@@ -120,6 +122,8 @@ Dos tipos de sección que se "montan" unas sobre otras al hacer scroll, controla
 
 La secuencia de `zIndex` en `App()` es **1..5** en orden de aparición. Debe ser un contador único y global: no reiniciar por grupo, no duplicar, mantener el orden si se añaden secciones.
 
+**Regalos (`stack-section--no-effect`)** es la excepción: por ser la última sección antes del footer no lleva `interactive`, es `position: static`, sin sombra y con el `::after` de oscurecimiento anulado; no se "clava" al hacer scroll.
+
 ### Piezas clave
 
 - `useReveal` / `Reveal` → animación fade + subida al hacer scroll (IntersectionObserver). Props `delay` y `as` (`div` | `li`).
@@ -133,11 +137,12 @@ Componentes eliminados en esta fase (no reintroducir sin motivo): `PhotoPairInli
 
 ### Hero (configuración visual actual)
 
-- Fondo de portada en **bucle** (dos versiones por ancho de pantalla, en `HeroPhoto`, ambas con `object-fit: contain` = banner sin recortes):
-  - Escritorio (>720px): `<video>` `heroVideo` → `./assets/Horizontal_Pajaros.mp4` (**3840×1268**, ~3:1, 5,8 MB) con `autoPlay muted loop playsInline` y **sin `controls`** (sin barra de reproducción ni botones). Al ser ~3:1 sobre un hero de pantalla completa se ve como una franja pegada arriba con blanco debajo.
-  - Móvil (≤720px): `<img>` `heroGif` → `./assets/Vertical_Pajaros.gif` (**GIF animado 540×960**, 11,4 MB; los GIF bucleean solos). Se alternan con media queries (`.hero-media--desktop` / `.hero-media--mobile`). El archivo se renombró de `Vertical_Pajaros` (sin extensión, no resolvible por TS) a `Vertical_Pajaros.gif`.
+- Fondo de portada en **bucle** (dos versiones por ancho de pantalla, en `HeroPhoto`):
+  - Escritorio (>720px): `<video>` `heroVideo` → `./assets/Horizontal_Pajaros.mp4` (**3840×1268**, ~3:1, 5,8 MB) con `autoPlay muted loop playsInline` y **sin `controls`**. `.hero-media` con `width: 100%; height: auto` (respeta relación) y el wrap `align-items: flex-start`: el vídeo queda pegado al navbar, **sin banda blanca arriba** (el blanco queda debajo).
+  - Móvil (≤720px): `<img>` `heroGif` → `./assets/Vertical_Pajaros.gif` (**GIF animado 540×960**, 11,4 MB; los GIF bucleean solos). `width/height: 100%` + `object-fit: cover`: ocupa toda la pantalla de lado a lado (sin bandas laterales, con recorte proporcional). Alternados con media queries (`.hero-media--desktop` / `.hero-media--mobile`). El archivo se renombró de `Vertical_Pajaros` (sin extensión) a `Vertical_Pajaros.gif`.
   - El GIF de 11,4 MB es pesado para móvil; para aligerarlo haría falta convertirlo a MP4 con ffmpeg (no instalado en este entorno).
-- `.hero-image-wrap` es `absolute inset: 0` con flex centrado horizontal y `align-items: flex-start` (el medio queda arriba, pegado al navbar, sin espacio entre ambos) y `.hero-media` con `width/height: 100%` y `object-fit: contain`. Sin recortes ni zoom al hacer scroll.
+- Clave del ajuste: **no** usar `height: 100%` + `object-fit: contain` en el hero (la caja ocupa todo el alto y `contain` centra el medio dentro → bandas blancas). Escritorio: `height: auto`. Móvil: `height: 100%` + `cover`.
+- `.hero-image-wrap` es `absolute inset: 0` con flex centrado horizontal y `align-items: flex-start` (el medio queda arriba, pegado al navbar) y `.hero-media` con `width: 100%` y `height: auto` (escritorio) / `height: 100%` + `cover` (móvil). Sin zoom al hacer scroll.
 - **Sin texto encima**: se eliminaron LUANA & JOAN, fecha, lugar y el botón RSVP del hero (las claves `hero.*` siguen en `TRANSLATIONS` sin uso; el RSVP solo está en el navbar).
 - El hero hereda de `.stack-section--interactive` un `transform: scale()` según `--cover`, pero `.stack-section--hero .stack-section__inner` lo anula (`transform: none` y `filter: none`) para que el medio no se mezcle ni escale.
 - Las imágenes antiguas del hero (`Pajaros areglados.jfif`, `Luana i Joan (1)-03.jpg.jpeg`) ya no se importan.

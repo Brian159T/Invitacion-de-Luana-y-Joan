@@ -23,6 +23,7 @@ La web es bilingüe (català por defecto e inglés) y el fondo es blanco en toda
 - `Liontinela Realise` (títulos protagonistas: hero y logos de navbar y footer) y `Minion Pro` (fecha del hero) se importan desde `https://fonts.cdnfonts.com/css/liontinela-realise` y `https://fonts.cdnfonts.com/css/minion-pro`. Esto las descarga en caliente al abrir la web y **requiere conexión a internet**; sin conexión se usa la fuente de respaldo (`Playfair Display` / serif).
 - Seguridad: las fuentes son archivos estáticos (woff/woff2), no ejecutan código en el servidor; la conexión es HTTPS. Los riesgos reales son de dependencia (si el CDN cae o es bloqueado por la red del usuario) y de privacidad (la IP/agente del visitante llega a ese servidor, igual que con Google Fonts).
 - Licencias: `Minion Pro` es una fuente comercial de Adobe; los CDN la sirven a veces sin licencia clara. En este proyecto de boda (uso personal/no comercial) es aceptable, pero la alternativa 100% segura es el self-hosting: descargar los `.woff2/.woff` a `src/assets/fonts/` y declarar `@font-face` propio (así se elimina la dependencia y la fuga de datos, pero hay que reimportar los archivos cada vez que se cambie de CDN a local).
+- `Source Serif 4` (textos de fecha de La Boda: eyebrow fija "18 i 19 de juny de 2027" y eyebrows de las tarjetas viernes/sábado) se instala por npm (`@fontsource/source-serif-4`) y se auto-hospeda: los `.css` de subset latin se importan en `src/main.tsx` (`latin-400.css` y `latin-600.css`). No depende de CDNs externos. En `App.css` se aplica solo bajo `#boda` (`#boda .sticky-split__eyebrow`, `#boda .section__eyebrow`).
 
 ## Comandos
 
@@ -81,6 +82,8 @@ Dos tipos de sección que se "montan" unas sobre otras al hacer scroll, controla
 
 La secuencia de zIndex en `App()` es **1..5** en orden de aparición (hero → cuenta atrás → boda → Barcelona → regalos). Debe ser un contador único y global: no reiniciar por grupo, no duplicar, mantener el orden si se añaden secciones.
 
+**Excepción — Regalos (`stack-section--no-effect`):** al ser la última sección antes del footer, Regalos **no tiene efecto de apilado** (no lleva `interactive`): es `position: static`, sin sombra (`box-shadow: none`) y su `::after` de oscurecimiento está anulado. Así no se "clava" ni se oscurece al hacer scroll; el footer simplemente le sigue.
+
 ### Piezas clave
 
 - `useReveal` / `Reveal` → animación fade + subida al hacer scroll (IntersectionObserver). Se puede pasar `delay` y `as` (`div` | `li`).
@@ -94,10 +97,11 @@ Componentes eliminados en esta fase (no reintroducir sin motivo): `PhotoPairInli
 
 ### Hero (configuración visual actual)
 
-- Fondo de portada en **bucle** (dos versiones según el ancho de pantalla, en `HeroPhoto`, ambas con `object-fit: contain` = banner completo sin recortes):
-  - Escritorio (>720px): `<video>` `heroVideo` → `./assets/Horizontal_Pajaros.mp4` (**3840×1268**, ~3:1, 5,8 MB), con `autoPlay muted loop playsInline` y **sin `controls`** (no se ven barra de reproducción ni botones). Al ser ~3:1 en un hero de pantalla completa se ve como una franja/banner centrado con blanco arriba y abajo.
-  - Móvil (≤720px): `<img>` `heroGif` → `./assets/Vertical_Pajaros.gif` (**GIF animado 540×960**, 11,4 MB; los GIF bucleean solos). Se oculta/muestra con media queries en `.hero-media--desktop` / `.hero-media--mobile`. (Se renombró de `Vertical_Pajaros` a `Vertical_Pajaros.gif` para que TypeScript lo resuelva con los tipos de `vite/client`.)
+- Fondo de portada en **bucle** (dos versiones según el ancho de pantalla, en `HeroPhoto`):
+  - Escritorio (>720px): `<video>` `heroVideo` → `./assets/Horizontal_Pajaros.mp4` (**3840×1268**, ~3:1, 5,8 MB), con `autoPlay muted loop playsInline` y **sin `controls`**. `.hero-media` es `width: 100%; height: auto` (respeta la relación del vídeo) y el wrap lo alinea arriba (`align-items: flex-start`), así el borde superior del vídeo coincide con el borde inferior del navbar **sin banda blanca**; el blanco queda solo debajo.
+  - Móvil (≤720px): `<img>` `heroGif` → `./assets/Vertical_Pajaros.gif` (**GIF animado 540×960**, 11,4 MB; los GIF bucleean solos). Ocupa todo el ancho/alto del hero con `object-fit: cover` (edge-to-edge, sin bandas laterales, con recorte proporcional). Se oculta/muestra con media queries en `.hero-media--desktop` / `.hero-media--mobile`.
   - El GIF de 11,4 MB es pesado para móvil; si se quiere aligerar, convertirlo a MP4 con ffmpeg (no instalado en este entorno) y pasarlo a `<video>` como el de escritorio.
+- Causa del espacio/recortes: NO usar `height: 100% + object-fit: contain` (la caja ocupa todo el hero y `contain` centra el medio dentro, dejando bandas). El desktop usa `height: auto`; el móvil `height: 100% + cover`.
 - `.hero-image-wrap` es `absolute inset: 0` con flex centrado horizontal y **`align-items: flex-start`** (el medio queda pegado arriba, tocando el navbar, sin espacio entre uno y otro) y `.hero-media` ocupa `width/height: 100%` con `object-fit: contain`; sin zoom/escala al hacer scroll (no hay `transform: scale` ni JS que cambie su tamaño).
 - El hero **no tiene ningún texto encima** (se eliminaron LUANA & JOAN, fecha, lugar y el botón RSVP; las claves `hero.*` siguen en `TRANSLATIONS` sin uso). El RSVP solo está en el navbar.
 - El hero hereda de `.stack-section--interactive` un `transform: scale()` según `--cover`, pero `.stack-section--hero .stack-section__inner` lo anula con `transform: none` (además de `filter: none`) para que el medio no se mezcle ni escale.
