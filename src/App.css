@@ -241,7 +241,7 @@ ul {
 }
 
 /* ============================================================
-   HERO — foto grande de portada + nombres/fecha/lugar
+   HERO — vídeo/GIF de portada en bucle (sin texto encima)
    ============================================================ */
 
 .hero {
@@ -263,117 +263,33 @@ ul {
   overflow: hidden;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 }
 
-.hero-image-wrap picture {
-  display: flex;
-  width: 100%;
-  height: 100%;
-}
-
-.hero-image {
+.hero-media {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-.hero__content {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: 24px 24px 12px;
-  text-align: center;
-  color: var(--text);
+.hero-media--mobile {
+  display: none;
 }
 
-.hero__title {
-  font-family: 'Liontinela Realise', var(--font-display), serif;
-  font-size: clamp(26px, 5.5vw, 54px);
-  letter-spacing: 0.03em;
-  line-height: 1.15;
-  color: #1a1a1a;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.95), 0 2px 6px rgba(255, 255, 255, 0.9);
-}
+@media (max-width: 720px) {
+  .hero-media--desktop {
+    display: none;
+  }
 
-.hero__amp {
-  display: block;
-  font-style: italic;
-  font-size: 0.5em;
-  margin: 4px 0;
-  color: #1a1a1a;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.95), 0 2px 6px rgba(255, 255, 255, 0.9);
-}
-
-.hero__date {
-  margin-top: 14px;
-  font-family: 'Minion Pro', var(--font-display), serif;
-  font-size: 22px;
-  color: #1a1a1a;
-  text-shadow: 0 0 4px rgba(255, 255, 255, 0.9);
-}
-
-.hero__place {
-  margin-top: 4px;
-  font-size: 16px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #1a1a1a;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.95), 0 2px 6px rgba(255, 255, 255, 0.9);
-  opacity: 0.85;
-}
-
-.btn {
-  display: inline-block;
-  margin-top: 28px;
-  padding: 12px 30px;
-  border: 1px solid #b58a5a;
-  border-radius: 999px;
-  color: #1a1a1a;
-  text-shadow: 0 0 4px rgba(255, 255, 255, 0.9);
-  font-size: 14px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
-}
-
-.btn:hover {
-  background: #b58a5a;
-  color: var(--bg);
-  text-decoration: none;
-}
-
-.btn--cta {
-  background: transparent;
-}
-
-.btn--large {
-  padding: 16px 44px;
-  font-size: 16px;
+  .hero-media--mobile {
+    display: block;
+  }
 }
 
 @media (max-width: 720px) {
   .hero {
     min-height: 88vh;
     min-height: 88svh;
-  }
-
-  .hero__content {
-    padding: 28px 20px 16px;
-  }
-
-  .hero__title {
-    font-size: clamp(26px, 8vw, 40px);
-  }
-
-  .hero__date {
-    font-size: 19px;
-  }
-
-  .hero__place {
-    font-size: 13px;
   }
 }
 
@@ -382,40 +298,6 @@ ul {
     min-height: 82vh;
     min-height: 82svh;
   }
-}
-
-/* ============================================================
-   PARES DE FOTOS INLINE
-   ============================================================ */
-
-.image-placeholder {
-  width: 100%;
-  height: 100%;
-  min-width: 220px;
-  min-height: 260px;
-  background: var(--bg-soft);
-  border: 1px dashed var(--gold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-soft);
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.image-placeholder--qr {
-  width: 180px;
-  height: 180px;
-  min-width: 0;
-  min-height: 0;
-  margin: 28px auto 0;
-}
-
-.image-placeholder--gallery {
-  width: 100%;
-  max-width: 260px;
-  height: 260px;
 }
 
 /* ============================================================
@@ -474,6 +356,10 @@ ul {
   font-weight: 600;
 }
 
+.section__eyebrow--large {
+  font-size: 17px;
+}
+
 .eyebrow-icon {
   flex-shrink: 0;
 }
@@ -483,10 +369,6 @@ ul {
   font-size: 24px;
   margin-top: 10px;
   color: var(--text-soft);
-}
-
-.section__script--liona {
-  font-family: 'Liontinela Realise', var(--font-display), serif;
 }
 
 @media (max-width: 860px) {
@@ -759,6 +641,14 @@ ul {
   font-size: 20px;
   letter-spacing: 0.03em;
   color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.gift-qr {
+  display: block;
+  width: 187px;
+  height: auto;
+  margin: 28px auto 0;
 }
 
 /* ============================================================
@@ -810,7 +700,7 @@ ul {
 }
 
 /* ============================================================
-   IDIOMA — selector de idioma (català / castellano / english)
+   IDIOMA — selector de idioma (català / english)
    -> Al primer acceso (sin idioma guardado) una capa a pantalla
       completa pide al usuario que elija. El mismo selector queda
       disponible en navbar y footer para cambiar de idioma.

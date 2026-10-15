@@ -6,21 +6,21 @@ Contexto completo y detallado del proyecto: [`docs/CONTEXTO.md`](docs/CONTEXTO.m
 
 ## Descripción del proyecto
 
-Invitación web de boda para Luana y Joan (boda: sábado 19 de junio de 2027, Santa Susanna, Barcelona). Sitio de una sola página con secciones: hero, cuenta atrás, la boda, guía de Barcelona, regalos y galería. La confirmación de asistencia (RSVP) se hace vía formulario de Google Forms. Las secciones FAQ y la tarjeta final RSVP ("Una última cosa") se eliminaron en esta fase.
+Invitación web de boda para Luana y Joan (boda: sábado 19 de junio de 2027, Santa Susanna, Barcelona). Sitio de una sola página con secciones: hero, cuenta atrás, la boda, guía de Barcelona y regalos. La confirmación de asistencia (RSVP) se hace vía formulario de Google Forms. Las secciones FAQ, la galería y la tarjeta final RSVP ("Una última cosa") se eliminaron en esta fase.
 
-La web es multilingüe (català, castellano e inglés) y el fondo es blanco en toda la web. Todo el contenido (texto, comentarios, commits) está en español; los textos visibles van en `TRANSLATIONS`.
+La web es bilingüe (català por defecto e inglés) y el fondo es blanco en toda la web. Todo el contenido (texto, comentarios, commits) está en español; los textos visibles van en `TRANSLATIONS`.
 
 ## Stack
 
 - React 19 + TypeScript (Vite)
-- `lucide-react` para iconos (únicos): `Calendar`, `Gift`, `Camera`, `Plane`
+- `lucide-react` para iconos (únicos): `Calendar`, `Gift`, `Plane`
 - CSS plano (sin preprocesador ni CSS modules): `src/App.css` (estilos de la app) y `src/index.css` (base/plantilla original)
 - Sin framework de test en el proyecto
 
 ## Fuentes tipográficas
 
 - No se instala ni se descarga nada al repositorio: las fuentes se cargan vía `@import` en `App.css` (líneas iniciales) usando páginas de terceros que sirven las mismas familias con el nombre exacto.
-- `Liontinela Realise` (títulos protagonistas: hero, script "Dos días para celebrarlo", logos de navbar y footer) y `Minion Pro` (fecha del hero) se importan desde `https://fonts.cdnfonts.com/css/liontinela-realise` y `https://fonts.cdnfonts.com/css/minion-pro`. Esto las descarga en caliente al abrir la web y **requiere conexión a internet**; sin conexión se usa la fuente de respaldo (`Playfair Display` / serif).
+- `Liontinela Realise` (títulos protagonistas: hero y logos de navbar y footer) y `Minion Pro` (fecha del hero) se importan desde `https://fonts.cdnfonts.com/css/liontinela-realise` y `https://fonts.cdnfonts.com/css/minion-pro`. Esto las descarga en caliente al abrir la web y **requiere conexión a internet**; sin conexión se usa la fuente de respaldo (`Playfair Display` / serif).
 - Seguridad: las fuentes son archivos estáticos (woff/woff2), no ejecutan código en el servidor; la conexión es HTTPS. Los riesgos reales son de dependencia (si el CDN cae o es bloqueado por la red del usuario) y de privacidad (la IP/agente del visitante llega a ese servidor, igual que con Google Fonts).
 - Licencias: `Minion Pro` es una fuente comercial de Adobe; los CDN la sirven a veces sin licencia clara. En este proyecto de boda (uso personal/no comercial) es aceptable, pero la alternativa 100% segura es el self-hosting: descargar los `.woff2/.woff` a `src/assets/fonts/` y declarar `@font-face` propio (así se elimina la dependencia y la fuga de datos, pero hay que reimportar los archivos cada vez que se cambie de CDN a local).
 
@@ -38,7 +38,7 @@ Siempre ejecutar `npm run lint` y `npm run build` después de tocar código.
 ## Estructura
 
 ```
-index.html                # HTML raíz (lang="en" aún sin actualizar; favicon apunta al PNG de assets)
+index.html                # HTML raíz (lang="ca"; favicon apunta al PNG de assets)
 vite.config.ts            # config Vite (solo plugin react)
 eslint.config.js          # ESLint flat config
 docs/
@@ -66,49 +66,46 @@ Todo vive en un único archivo `src/App.tsx` (~1030 líneas). Mantener esta orga
 
 ### Sistema de idiomas (contexto en `LanguageProvider`)
 
-- `TRANSLATIONS` → `Record<Lang, Record<string, string>>` con las tres lenguas (`ca`, `es`, `en`). Añadir siempre la misma clave en las tres.
+- `TRANSLATIONS` → `Record<Lang, Record<string, string>>` con las dos lenguas (`ca`, `en`), con `ca` como defecto en todos los fallbacks. Añadir siempre la misma clave en las dos.
 - `useLanguage()` → hook que devuelve `{ lang, setLang, t }`; `t('clave')` traduce al idioma activo.
 - Primer acceso sin idioma guardado → `LanguagePicker` (capa a pantalla completa que pide elegir). Después se cambia desde `LanguageSwitcher` (navbar y footer).
-- Nombres propios no se traducen y van igual en las tres lenguas (LUANA & JOAN, Rome Hielos, Mas Juli, Mare de Déu de Gràcia, Pura Brasa, IBAN, Bizum…).
-- Textos fuera de `TRANSLATIONS` (hardcodeados): botón `RSVP`, textos `QR` de los placeholders, lugar del hero ("Santa Susanna · Barcelonaaa", typo `Barcelonaaa` pendiente) y la capa inicial del idioma. Detalle en `docs/CONTEXTO.md`.
+- Nombres propios no se traducen y van igual en las dos lenguas (LUANA & JOAN, Rome Hielos, Mas Juli, Mare de Déu de Gràcia, Pura Brasa, IBAN, Bizum…).
+- Textos fuera de `TRANSLATIONS` (hardcodeados): botón `RSVP` (navbar) y la capa inicial del idioma. Detalle en `docs/CONTEXTO.md`.
 
 ### Sistema de "apilado" de secciones (CRÍTICO, no romper)
 
 Dos tipos de sección que se "montan" unas sobre otras al hacer scroll, controlado por un `zIndex` global creciente que se pasa a mano en `App()`:
 
 - `StackSection` → secciones cortas de un viewport que usan sticky real (hero, cuenta atrás, regalos). Se envuelven en `<div className="stack">`.
-- `SlideSection` → secciones largas en flujo normal de scroll (la boda, Barcelona, galería). El efecto de "montaje" es solo CSS (zIndex + esquina redondeada + sombra + solape negativo).
+- `SlideSection` → secciones largas en flujo normal de scroll (la boda, Barcelona). El efecto de "montaje" es solo CSS (zIndex + esquina redondeada + sombra + solape negativo).
 
-La secuencia de zIndex en `App()` es **1..6** en orden de aparición (hero → cuenta atrás → boda → Barcelona → regalos → galería). Debe ser un contador único y global: no reiniciar por grupo, no duplicar, mantener el orden si se añaden secciones.
+La secuencia de zIndex en `App()` es **1..5** en orden de aparición (hero → cuenta atrás → boda → Barcelona → regalos). Debe ser un contador único y global: no reiniciar por grupo, no duplicar, mantener el orden si se añaden secciones.
 
 ### Piezas clave
 
 - `useReveal` / `Reveal` → animación fade + subida al hacer scroll (IntersectionObserver). Se puede pasar `delay` y `as` (`div` | `li`).
 - `useStackCoverEffect` → calcula la cobertura de cada `.stack-section`. Solo se aplica a secciones de un viewport.
-- `StickySplit` → cabecera fija + paneles laterales. Prop `reverse` alterna la posición. Usado por la boda, Barcelona y galería.
+- `StickySplit` → cabecera fija + paneles laterales. Prop `reverse` alterna la posición. Usado por la boda y Barcelona.
 - `useCountdown` / `Countdown` → cuenta atrás hacia `WEDDING_DATE`.
 - `SignatureDivider` → trazo dorado con rombo, cierra el encabezado de cada bloque.
-- Plaza para imagen QR: `.image-placeholder` con modificadores `--qr` (cuadrado, centrado) y `--gallery`. Ids actuales: `qr-regalos`, `qr-galeria`.
+- QR de pagos de Regalos: imagen real `<img src={qrPagos} className="gift-qr">` (`./assets/Qr pagos.jpeg`), centrada (180 px).
 
-Componentes eliminados en esta fase (no reintroducir sin motivo): `PhotoPairInline`, `Faq`, `RsvpCard`. Las claves `faq.*` y `rsvp.*` siguen en `TRANSLATIONS` por si se restauran.
+Componentes eliminados en esta fase (no reintroducir sin motivo): `PhotoPairInline`, `Faq`, `RsvpCard` y la sección de galería. Las claves `faq.*`, `rsvp.*` y `galeria.*` siguen en `TRANSLATIONS` por si se restauran.
 
 ### Hero (configuración visual actual)
 
-- Imagen de portada (dos versiones según el ancho de pantalla, vía `<picture>` en `HeroPhoto`):
-  - Escritura (>720px): `heroImage` → `./assets/Pajaros areglados.jfif`.
-  - Móvil (≤720px): `heroImageMobile` → `./assets/Luana i Joan (1)-03.jpg.jpeg` (576×884, vertical), que es la que mejor encaja en pantalla de teléfono. La imagen `Luana i Joan (1)-02.jpg.jpeg` existe en `assets` pero **no se usa** (fue imagen de tarjeta al pie, ya retirada).
-- `.hero-image-wrap picture` necesita `display: flex; width/height: 100%` para que el `height: 100%` + `object-fit: contain` de `.hero-image` siga funcionando (el `height: 100%` se resolvería contra un `<picture>` inline de alto automático).
-- La imagen se muestra **estática y completa**: `.hero-image-wrap` es `absolute inset: 0` con flex centrado (ambos ejes) y `.hero-image` ocupa `width: 100% / height: 100%` con `object-fit: contain`, así la foto se ve entera, sin recortes, centrada y sin ningún efecto de zoom/escala al hacer scroll (no hay `transform: scale`, `animation-timeline: scroll()` ni JS que cambie su tamaño).
-- Móvil aplica la misma regla (`object-fit: contain` en 88svh/82svh de alto del hero); no sobreescribir.
-- El hero hereda de `.stack-section--interactive` un `transform: scale()` según `--cover`, pero `.stack-section--hero .stack-section__inner` lo anula con `transform: none` (además de `filter: none`) para que la imagen no se mezcle ni escale.
-- **Resolución de las imágenes (PENDIENTE, calidad):** `heroImage` (escritura) es **1152×928 px** y `heroImageMobile` (móvil) es **576×884 px**. Con `object-fit: contain` se escalan hacia arriba: aceptable en monitores 1x, pero **borrosas/pixeladas en retina (2x) y 4K**. Pendiente sustituirlas por versiones ≥2× (escritura ≥2304px de ancho, móvil ≥1152×1768 px) manteniendo los nombres/imports de `heroImage` y `heroImageMobile` para no tocar código.
-- Texto del hero (LUANA & JOAN, fecha, lugar, botón RSVP) en color `#1a1a1a` con `text-shadow` blanco reforzado (título, `&` y lugar con `0 0 8px rgba(255, 255, 255, 0.95), 0 2px 6px rgba(255, 255, 255, 0.9)`; fecha y `.btn` con `0 0 4px rgba(255, 255, 255, 0.9)`), hardcodeado en `.hero__title`, `.hero__amp`, `.hero__date`, `.hero__place` y `.btn`.
-- Título y fecha son pequeños y quedan pegados al pie de la imagen (`.hero__content` con `padding-bottom: 12px` en desktop, `16px` en móvil).
-- El hero NO se oscurece al hacer scroll: `.stack-section--hero` tiene fondo `var(--bg)`, su `::after` con `opacity: 0` y su `.stack-section__inner` con `filter: none` (anulan el efecto de oscurecimiento del stack).
+- Fondo de portada en **bucle** (dos versiones según el ancho de pantalla, en `HeroPhoto`, ambas con `object-fit: contain` = banner completo sin recortes):
+  - Escritorio (>720px): `<video>` `heroVideo` → `./assets/Horizontal_Pajaros.mp4` (**3840×1268**, ~3:1, 5,8 MB), con `autoPlay muted loop playsInline` y **sin `controls`** (no se ven barra de reproducción ni botones). Al ser ~3:1 en un hero de pantalla completa se ve como una franja/banner centrado con blanco arriba y abajo.
+  - Móvil (≤720px): `<img>` `heroGif` → `./assets/Vertical_Pajaros.gif` (**GIF animado 540×960**, 11,4 MB; los GIF bucleean solos). Se oculta/muestra con media queries en `.hero-media--desktop` / `.hero-media--mobile`. (Se renombró de `Vertical_Pajaros` a `Vertical_Pajaros.gif` para que TypeScript lo resuelva con los tipos de `vite/client`.)
+  - El GIF de 11,4 MB es pesado para móvil; si se quiere aligerar, convertirlo a MP4 con ffmpeg (no instalado en este entorno) y pasarlo a `<video>` como el de escritorio.
+- `.hero-image-wrap` es `absolute inset: 0` con flex centrado horizontal y **`align-items: flex-start`** (el medio queda pegado arriba, tocando el navbar, sin espacio entre uno y otro) y `.hero-media` ocupa `width/height: 100%` con `object-fit: contain`; sin zoom/escala al hacer scroll (no hay `transform: scale` ni JS que cambie su tamaño).
+- El hero **no tiene ningún texto encima** (se eliminaron LUANA & JOAN, fecha, lugar y el botón RSVP; las claves `hero.*` siguen en `TRANSLATIONS` sin uso). El RSVP solo está en el navbar.
+- El hero hereda de `.stack-section--interactive` un `transform: scale()` según `--cover`, pero `.stack-section--hero .stack-section__inner` lo anula con `transform: none` (además de `filter: none`) para que el medio no se mezcle ni escale.
+- Imágenes antiguas del hero (`Pajaros areglados.jfif`, `Luana i Joan (1)-03.jpg.jpeg`) ya no se importan; siguen en `assets/` sin uso.
 
 ### Datos sensibles a completar (placeholders)
 
-Varios campos son provisionales: IBAN (`ESXX XXXX...`), Bizum (`600 000 000`), teléfonos del footer (`+34 XXX XX XX XX`), hoteles recomendados y consejos de la guía de Barcelona, y las imágenes QR de Regalos y Galería (los placeholders `#qr-regalos` / `#qr-galeria` están listos para recibirlas).
+Varios campos son provisionales: teléfonos del footer (`+34 XXX XX XX XX`), hoteles recomendados y consejos de la guía de Barcelona. Regalos ya tiene los datos reales (Bizum `+34698697571`, cuenta Banc Sabadell `ES85 0081 0093 4400 0211 2515` y QR de pagos).
 
 ## Convenciones de código
 

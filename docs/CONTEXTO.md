@@ -5,40 +5,39 @@ Documento de referencia con todo el contexto de la web de invitación de boda de
 ## 1. Resumen
 
 - Web de **una sola página** con fondo blanco en toda la web.
-- Multilingüe: **català (ca), castellano (es) e inglés (en)**. El idioma se elige al primer acceso (capa a pantalla completa) y se cambia desde la navbar o el footer; la elección se guarda en `localStorage`.
+- Multilingüe: **català (ca) e inglés (en)**, con el catalán como idioma por defecto. El idioma se elige al primer acceso (capa a pantalla completa) y se cambia desde la navbar o el footer; la elección se guarda en `localStorage`.
 - Todo el contenido técnico (textos de código, comentarios, commits, docs) está en **español**; los textos visibles para el usuario viven en `TRANSLATIONS`.
 - Confirmación de asistencia (RSVP) vía **formulario de Google Forms** (`RSVP_FORM_URL`).
 
 ## 2. Estado actual de las secciones
 
-El sitio se compone (en orden, con su `zIndex`, contador global único 1..6):
+El sitio se compone (en orden, con su `zIndex`, contador global único 1..5):
 
 | # | zIndex | Sección | Tipo | Contenido |
 |---|--------|---------|------|-----------|
-| 1 | 1 | `#inicio` (hero) | `StackSection` | Foto de portada estática + LUANA & JOAN + fecha + lugar + botón RSVP |
+| 1 | 1 | `#inicio` (hero) | `StackSection` | Vídeo/GIF de portada en bucle, **sin texto encima**, pegado al navbar |
 | 2 | 2 | `#cuenta-atras` | `StackSection` | Cuenta atrás hacia el `WEDDING_DATE` |
 | 3 | 3 | `#boda` | `SlideSection` | Dos tarjetas: viernes (Almuerzo Rome Hielos) y sábado (ceremonia y banquete). Sin fotos |
 | 4 | 4 | `#barcelona` | `SlideSection` | Guía de invitados (cómo llegar, dormir, comer, visitar, playas, cosas, consejos) |
-| 5 | 5 | `#regalos` | `StackSection` | Texto + IBAN/Bizum + **placeholder QR** (`#qr-regalos`) |
-| 6 | 6 | `#galeria` | `SlideSection` | Solamente un **placeholder QR** centrado (`#qr-galeria`) |
+| 5 | 5 | `#regalos` | `StackSection` | Texto + Bizum + cuenta + **QR de pagos real** (`Qr pagos.jpeg`) |
 
 Fuera del stack (no se apila): `<footer>` con logo "LJ", enlaces, selector de idioma y contactos.
 
-> **Eliminadas en esta fase:** la sección de Preguntas (FAQ, era zIndex 7) y la tarjeta final RSVP "Una última cosa / Confirmar asistencia" (era zIndex 8). La galería ya no tiene fotos. Regalos ya no tiene fotos; solo texto, datos bancarios y espacio para QR.
+> **Eliminadas en esta fase:** la sección de Preguntas (FAQ, era zIndex 7), la tarjeta final RSVP "Una última cosa / Confirmar asistencia" (era zIndex 8) y la galería (era zIndex 6).
 
 ### Decisiones recientes (pueden invertirse si se pide)
 
 - **Logo navbar**: texto `L J` (con espacio no separable) con la fuente **Liontinela Realise**, sin círculo ni borde, tamaño 18px.
 - **Logo footer**: `LJ` con **Liontinela Realise**.
-- **"Dos días para celebrarlo"** (script de La Boda) usa la clase `section__script--liona` → **Liontinela Realise**.
-- **Rome Hielos** se trata como **nombre propio**: no se traduce ni se sustituye (es: "Almuerzo Rome Hielos", ca: "Dinar Rome Hielos", en: "Lunch Rome Hielos").
-- **Traducciones verificadas**: todas las claves tienen las tres lenguas; `hero.date` es correcta (19/06/2027 es sábado) y los nombres propios (Mas Juli, Mare de Déu de Gràcia, Pura Brasa, Rome Hielos) se mantienen intactos en los tres idiomas.
+- **Script "Dos días para celebrarlo"** de La Boda: **eliminado** en esta fase (las claves `boda.script` siguen en `TRANSLATIONS` por si se restaura; la clase `.section__script--liona` se borró del CSS).
+- **Rome Hielos** se trata como **nombre propio**: no se traduce ni se sustituye (ca: "Dinar Rome Hielos", en: "Lunch Rome Hielos").
+- **Traducciones verificadas**: todas las claves tienen las dos lenguas (ca/en) y los nombres propios (Mas Juli, Mare de Déu de Gràcia, Pura Brasa, Rome Hielos) se mantienen intactos. El castellano se eliminó; el catalán es el idioma por defecto (`'ca'` en todos los fallbacks, `lang="ca"` en `index.html`).
 - **Favicon**: `icono de la pestana redondeado.png` (en `src/assets`, generado con esquinas redondeadas y transparencia, ~108px de radio sobre 712×434). Se referenció en `index.html`. Se eliminó `src/assets/vite.svg`.
 
 ## 3. Stack
 
 - React 19 + TypeScript (Vite).
-- `lucide-react` para iconos — actualmente importados: `Calendar`, `Gift`, `Camera`, `Plane` (se eliminó `HelpCircle` con la sección FAQ).
+- `lucide-react` para iconos — actualmente importados: `Calendar`, `Gift`, `Plane` (se eliminaron `HelpCircle` con la sección FAQ y `Camera` con la galería).
 - CSS plano (sin preprocesador ni CSS modules): `src/App.css` (estilos de la app) y `src/index.css` (base/plantilla original).
 - Sin framework de test en el proyecto.
 
@@ -68,7 +67,7 @@ Fuera del stack (no se apila): `<footer>` con logo "LJ", enlaces, selector de id
 ## 5. Estructura de archivos
 
 ```
-index.html                  # HTML raíz (lang="en" aún sin actualizar)
+index.html                  # HTML raíz (lang="ca"; favicon apunta al PNG de assets)
 vite.config.ts              # config Vite (solo plugin react)
 eslint.config.js            # ESLint flat config
 AGENTS.md                   # guía rápida para agentes de IA (enlaza este doc)
@@ -99,58 +98,57 @@ Todo vive en un único archivo `src/App.tsx` (~1030 líneas). Organización obli
 
 ### Sistema de idiomas (`LanguageProvider`)
 
-- `TRANSLATIONS` → `Record<Lang, Record<string, string>>` con `ca`, `es`, `en`. Añadir siempre la misma clave en las tres lenguas.
+- `TRANSLATIONS` → `Record<Lang, Record<string, string>>` con `ca` y `en`. Añadir siempre la misma clave en las dos lenguas.
 - `useLanguage()` → `{ lang, setLang, t }`; `t('clave')` traduce al idioma activo.
 - Primer acceso sin idioma guardado → `LanguagePicker` (capa a pantalla completa). Después se cambia desde `LanguageSwitcher` (navbar y footer).
-- Nombres propios no se traducen y van igual en las tres lenguas (LUANA & JOAN, Rome Hielos, Mas Juli, Mare de Déu de Gràcia, Pura Brasa, IBAN, Bizum…).
+- Nombres propios no se traducen y van igual en las dos lenguas (LUANA & JOAN, Rome Hielos, Mas Juli, Mare de Déu de Gràcia, Pura Brasa, IBAN, Bizum…).
 
-**Cómo se aplican las traducciones:** cada texto visible importante tiene su clave en las tres lenguas; si el usuario elige `ca`, `es` o `en` (en el picker inicial o el switcher), la elección se guarda en `localStorage` (`LANG_STORAGE_KEY`) y `t('clave')` devuelve el valor del idioma activo en cada render.
+**Cómo se aplican las traducciones:** cada texto visible importante tiene su clave en las dos lenguas; si el usuario elige `ca` o `en` (en el picker inicial o el switcher), la elección se guarda en `localStorage` (`LANG_STORAGE_KEY`) y `t('clave')` devuelve el valor del idioma activo en cada render.
 
 **Textos que quedan fuera de `TRANSLATIONS` (hardcodeados, a propósito):**
 - Nombres propios (LUANA & JOAN, Roma Hielos, Mas Juli, IBAN, Bizum, teléfonos del footer…).
-- Textos idénticos en las tres lenguas: botón `RSVP`, selector de idioma (CAT/ESP/ENG), textos `QR` de los placeholders.
-- Sin idioma gestionado: la capa inicial "¿Qué idioma prefieres?" (muestra los tres), el lugar del hero ("Santa Susanna · Barcelonaaa" — con typo `Barcelonaaa` aún sin corregir).
-- **Verificado:** `hero.date` es correcta en las tres lenguas y la fecha es real (19/06/2027 cae en sábado): es "Sábado 19 de Junio, 2027", ca "Dissabte 19 de juny, 2027", en "Saturday 19 June, 2027".
+- Textos idénticos en las dos lenguas: botón `RSVP`, selector de idioma (CAT/ENG).
+- Sin idioma gestionado: la capa inicial "Quin idioma prefereixes? / Which language do you prefer?" (muestra las dos).
+- **Verificado:** `hero.date` era correcta (19/06/2027 cae en sábado), pero la clave quedó **sin uso** al eliminarse todo el texto del hero.
 
 ### Sistema de "apilado" de secciones (CRÍTICO, no romper)
 
 Dos tipos de sección que se "montan" unas sobre otras al hacer scroll, controlado por un `zIndex` global creciente que se pasa a mano en `App()`:
 
 - `StackSection` → secciones cortas de un viewport con sticky real (hero, cuenta atrás, regalos). Se envuelven en `<div className="stack">`.
-- `SlideSection` → secciones largas en flujo normal de scroll (la boda, Barcelona, galería). El efecto de "montaje" es solo CSS (zIndex + esquina redondeada + sombra + solape negativo).
+- `SlideSection` → secciones largas en flujo normal de scroll (la boda, Barcelona). El efecto de "montaje" es solo CSS (zIndex + esquina redondeada + sombra + solape negativo).
 
-La secuencia de `zIndex` en `App()` es **1..6** en orden de aparición. Debe ser un contador único y global: no reiniciar por grupo, no duplicar, mantener el orden si se añaden secciones.
+La secuencia de `zIndex` en `App()` es **1..5** en orden de aparición. Debe ser un contador único y global: no reiniciar por grupo, no duplicar, mantener el orden si se añaden secciones.
 
 ### Piezas clave
 
 - `useReveal` / `Reveal` → animación fade + subida al hacer scroll (IntersectionObserver). Props `delay` y `as` (`div` | `li`).
 - `useStackCoverEffect` → calcula la cobertura de cada `.stack-section`. Solo se aplica a secciones de un viewport.
-- `StickySplit` → cabecera fija + paneles laterales. Prop `reverse` alterna la posición. Usado por la boda, Barcelona y galería.
+- `StickySplit` → cabecera fija + paneles laterales. Prop `reverse` alterna la posición. Usado por la boda y Barcelona.
 - `useCountdown` / `Countdown` → cuenta atrás hacia `WEDDING_DATE`.
 - `SignatureDivider` → trazo dorado con rombo, cierra el encabezado de cada bloque.
-- Placer para imagen (QR): elemento `.image-placeholder` con modificadores `--qr` (cuadrado 180×180 centrado) y `--gallery` (más ancho, centrado). Ids actuales: `qr-regalos`, `qr-galeria`.
+- QR de pagos de Regalos: imagen real `.gift-qr` → `<img src={qrPagos}>` (`./assets/Qr pagos.jpeg`), centrada, 180 px de ancho.
 
-Componentes eliminados en esta fase (no reintroducir sin motivo): `PhotoPairInline`, `Faq`, `RsvpCard`. Claves de traducción `faq.*` y `rsvp.*` siguen existiendo en `TRANSLATIONS` por si se restauran.
+Componentes eliminados en esta fase (no reintroducir sin motivo): `PhotoPairInline`, `Faq`, `RsvpCard` y la sección de galería. Claves de traducción `faq.*`, `rsvp.*` y `galeria.*` siguen existiendo en `TRANSLATIONS` por si se restauran.
 
 ### Hero (configuración visual actual)
 
-- Imagen de portada (dos versiones por ancho de pantalla, vía `<picture>` en `HeroPhoto`): escritorio (>720px) `heroImage` → `./assets/Pajaros areglados.jfif`; móvil (≤720px) `heroImageMobile` → `./assets/Luana i Joan (1)-03.jpg.jpeg` (576×884, vertical, la que mejor encaja en pantalla de teléfono).
-- `.hero-image-wrap picture` lleva `display: flex; width/height: 100%` para que el `height: 100%` + `object-fit: contain` de `.hero-image` se resuelva bien (un `<picture>` inline tendría alto automático).
-- Se muestra **estática y completa**: `.hero-image-wrap` es `absolute inset: 0` con flex centrado (ambos ejes) y `.hero-image` con `width/height: 100%` y `object-fit: contain`. Sin recortes ni zoom al hacer scroll.
-- El hero hereda de `.stack-section--interactive` un `transform: scale()` según `--cover`, pero `.stack-section--hero .stack-section__inner` lo anula (`transform: none` y `filter: none`) para que la imagen no se mezcle ni escale.
-- **PENDIENTE (resolución):** escritorio 1152×928 y móvil 576×884; con `object-fit: contain` se escalan hacia arriba y se ven borrosas en retina (2x) y 4K. Sustituir por versiones ≥2× (escritura ≥2304px de ancho, móvil ≥1152×1768 px) manteniendo los nombres/imports de `heroImage` y `heroImageMobile`.
-- Texto del hero en `#1a1a1a` con `text-shadow` blanco reforzado (título, `&` y lugar: `0 0 8px rgba(255,255,255,0.95), 0 2px 6px rgba(255,255,255,0.9)`; fecha y `.btn`: `0 0 4px rgba(255,255,255,0.9)`). Hardcodeado en `.hero__title`, `.hero__amp`, `.hero__date`, `.hero__place` y `.btn`.
-- Título y fecha pegados al pie de la imagen (`.hero__content` con `padding-bottom: 12px` desktop, `16px` móvil).
+- Fondo de portada en **bucle** (dos versiones por ancho de pantalla, en `HeroPhoto`, ambas con `object-fit: contain` = banner sin recortes):
+  - Escritorio (>720px): `<video>` `heroVideo` → `./assets/Horizontal_Pajaros.mp4` (**3840×1268**, ~3:1, 5,8 MB) con `autoPlay muted loop playsInline` y **sin `controls`** (sin barra de reproducción ni botones). Al ser ~3:1 sobre un hero de pantalla completa se ve como una franja pegada arriba con blanco debajo.
+  - Móvil (≤720px): `<img>` `heroGif` → `./assets/Vertical_Pajaros.gif` (**GIF animado 540×960**, 11,4 MB; los GIF bucleean solos). Se alternan con media queries (`.hero-media--desktop` / `.hero-media--mobile`). El archivo se renombró de `Vertical_Pajaros` (sin extensión, no resolvible por TS) a `Vertical_Pajaros.gif`.
+  - El GIF de 11,4 MB es pesado para móvil; para aligerarlo haría falta convertirlo a MP4 con ffmpeg (no instalado en este entorno).
+- `.hero-image-wrap` es `absolute inset: 0` con flex centrado horizontal y `align-items: flex-start` (el medio queda arriba, pegado al navbar, sin espacio entre ambos) y `.hero-media` con `width/height: 100%` y `object-fit: contain`. Sin recortes ni zoom al hacer scroll.
+- **Sin texto encima**: se eliminaron LUANA & JOAN, fecha, lugar y el botón RSVP del hero (las claves `hero.*` siguen en `TRANSLATIONS` sin uso; el RSVP solo está en el navbar).
+- El hero hereda de `.stack-section--interactive` un `transform: scale()` según `--cover`, pero `.stack-section--hero .stack-section__inner` lo anula (`transform: none` y `filter: none`) para que el medio no se mezcle ni escale.
+- Las imágenes antiguas del hero (`Pajaros areglados.jfif`, `Luana i Joan (1)-03.jpg.jpeg`) ya no se importan.
 - El hero NO se oscurece al hacer scroll (fondo `var(--bg)`, `::after` con `opacity: 0`, `.stack-section__inner` con `filter: none`).
-- Typo conocido: el lugar del hero muestra "Santa Susanna · Barcelonaaa" (App.tsx, `.hero__place`, hardcodeado, no traducido).
 
 ## 7. Datos sensibles pendientes de completar (placeholders)
 
-- IBAN: `ESXX XXXX XXXX XXXX XXXX XXXX`
-- Bizum: `600 000 000`
 - Teléfonos del footer: `+34 XXX XX XX XX`
 - Hoteles recomendados y consejos de la guía de Barcelona
-- Imágenes QR de Regalos y Galería (los placeholders están listos: `#qr-regalos`, `#qr-galeria`)
+
+Regalos ya tiene los datos reales: Bizum `+34698697571`, cuenta Banc Sabadell `ES85 0081 0093 4400 0211 2515` y QR de pagos (`src/assets/Qr pagos.jpeg`).
 
 ## 8. Comandos
 

@@ -1,7 +1,8 @@
-import { Plane, Calendar, Gift, Camera } from 'lucide-react'
+import { Plane, Calendar, Gift } from 'lucide-react'
 import './App.css'
-import heroImage from './assets/Pajaros areglados.jfif'
-import heroImageMobile from './assets/Luana i Joan (1)-03.jpg.jpeg'
+import heroVideo from './assets/Horizontal_Pajaros.mp4'
+import heroGif from './assets/Vertical_Pajaros.gif'
+import qrPagos from './assets/Qr pagos.jpeg'
 import {
   createContext,
   useCallback,
@@ -22,8 +23,9 @@ const WEDDING_DATE = new Date('2027-06-19T18:00:00')
 const LANG_STORAGE_KEY = 'invitacion-idioma'
 
 /* ============================================================
-   IDIOMA — traducciones (català / castellano / english)
-   -> La web se muestra en tres idiomas. En cada carga o recarga
+   IDIOMA — traducciones (català / english)
+   -> La web se muestra en dos idiomas (catalán por defecto).
+      En cada carga o recarga
       de la página se muestra una capa a pantalla completa pidiendo
       al usuario que elija; la última elección se guarda en
       localStorage y se preaplica (solo al contenido que queda por
@@ -31,103 +33,9 @@ const LANG_STORAGE_KEY = 'invitacion-idioma'
       la navbar o el footer.
    ============================================================ */
 
-type Lang = 'ca' | 'es' | 'en'
+type Lang = 'ca' | 'en'
 
 const TRANSLATIONS: Record<Lang, Record<string, string>> = {
-  es: {
-    'nav.boda': 'La boda',
-    'nav.barcelona': 'Barcelona',
-    'nav.regalos': 'Regalos',
-    'nav.galeria': 'Galería',
-    'nav.preguntas': 'Preguntas',
-    'nav.rsvp': 'Confirmar asistencia',
-    'hero.date': 'Sábado 19 de Junio, 2027',
-    'countdown.title': 'QUE EMPIECE LA CUENTA REGRESIVA…',
-    'countdown.dias': 'Días',
-    'countdown.horas': 'Horas',
-    'countdown.minutos': 'Minutos',
-    'countdown.segundos': 'Segundos',
-    'boda.eyebrow': '18 y 19 de Junio de 2027',
-    'boda.title': 'LA BODA',
-    'boda.script': 'Dos días para celebrarlo',
-    'boda.viernes.eyebrow': 'Viernes 18 de Junio',
-    'boda.viernes.title': 'Almuerzo Rome Hielos',
-    'boda.fecha': 'Fecha:',
-    'boda.horario': 'Horario:',
-    'boda.lugar': 'Lugar:',
-    'boda.ubicacion': 'Ubicación',
-    'boda.web': 'Web',
-    'boda.dresscode': 'Dress code:',
-    'boda.viernes.fechaValue': 'viernes 18 de Junio de 2027',
-    'boda.viernes.horarioValue': '12h aperitivo · 14h comida',
-    'boda.viernes.lugarValue': 'Mas Juli',
-    'boda.viernes.dressValue': 'Casual — Semi-formal',
-    'boda.sabado.eyebrow': 'Sábado 19 de Junio',
-    'boda.sabado.title': 'Ceremonia y banquete',
-    'boda.ceremonia': 'Ceremonia:',
-    'boda.ceremoniaValue': 'Mare de Déu de Gràcia — 08398 Santa Susanna, Barcelona · 18h',
-    'boda.banquete': 'Banquete:',
-    'boda.banqueteValue': 'Pura Brasa, Pineda de Mar',
-    'boda.horarios': 'Horarios:',
-    'boda.horariosValue':
-      'Ceremonia 18h · Aperitivo 20h · Cena 21h · Fiesta hasta las 03:00h',
-    'boda.sabado.dressValue': 'Etiqueta (Black Tie)',
-    'barcelona.eyebrow': 'Guía para invitados',
-    'barcelona.title': 'BARCELONA',
-    'barcelona.script': 'Todo lo que necesitáis si venís de fuera',
-    'guide.comoLlegar': 'Cómo llegar',
-    'guide.comoLlegar.text':
-      'Información sobre cómo llegar desde el aeropuerto y moverse por la ciudad en transporte público.',
-    'guide.transporte': 'Transporte público →',
-    'guide.dormir': 'Dónde dormir',
-    'guide.dormir.text': 'Hoteles recomendados cerca de la ceremonia y del banquete.',
-    'guide.dormir.todo': '(Añadir aquí vuestros hoteles recomendados)',
-    'guide.comer': 'Dónde comer',
-    'guide.comer.text': 'Una selección de restaurantes para todos los gustos.',
-    'guide.michelin': 'Guía Michelin Barcelona →',
-    'guide.visitar': 'Qué visitar (2-3 días)',
-    'guide.visitar.text': 'Itinerarios pensados para aprovechar una escapada corta.',
-    'guide.itinerarios': 'Itinerarios en Barcelona →',
-    'guide.playas': 'Playas',
-    'guide.playas.text': 'Las mejores playas de la ciudad y alrededores.',
-    'guide.mar': 'Mar y playas →',
-    'guide.cosas': 'Cosas para hacer',
-    'guide.cosas.text': 'Ideas y planes por si os quedáis unos días más.',
-    'guide.descubrir': 'Descubrir Barcelona →',
-    'guide.consejos': 'Consejos rápidos',
-    'guide.consejos.text':
-      'Efectivo, taxis, clima… Aquí podéis añadir cualquier consejo útil para vuestros invitados antes de que lleguen.',
-    'regalos.title': 'REGALOS',
-    'regalos.text1':
-      'Lo más importante para nosotros es compartir este día con vosotros.',
-    'regalos.text2':
-      'Si además queréis ayudarnos a empezar nuestra nueva aventura, podéis hacerlo mediante una aportación a nuestra luna de miel.',
-    'regalos.iban': 'IBAN',
-    'regalos.bizum': 'Bizum',
-    'galeria.eyebrow': 'Nuestros momentos',
-    'galeria.title': 'GALERÍA',
-    'galeria.script': 'Un vistazo a nuestra historia',
-    'faq.eyebrow': 'Dudas frecuentes',
-    'faq.title': 'PREGUNTAS',
-    'faq.script': 'Todo lo que necesitáis saber',
-    'faq.companiero.q': '¿Puedo llevar acompañante?',
-    'faq.companiero.a':
-      'Indicadlo en el formulario de confirmación de asistencia; si tenéis dudas, escribidnos directamente.',
-    'faq.dieta.q': '¿Hay opciones para restricciones alimentarias?',
-    'faq.dieta.a':
-      'Sí, podréis indicarlo en el formulario de RSVP y lo tendremos en cuenta con el catering.',
-    'faq.ninos.q': '¿Se admiten niños?',
-    'faq.ninos.a': '(Completad esta respuesta según vuestra decisión).',
-    'faq.autobus.q': '¿Cómo llego si no tengo coche?',
-    'faq.autobus.a':
-      'Consultad la sección de Barcelona para información sobre transporte; también organizaremos un servicio de autobús (a confirmar).',
-    'rsvp.eyebrow': 'Una última cosa',
-    'rsvp.confirm': 'CONFIRMAR ASISTENCIA',
-    'rsvp.sub': 'El mejor regalo es vuestra compañía',
-    'rsvp.note':
-      'Pero si queréis contribuir a nuestra nueva etapa juntos, podéis hacerlo aquí:',
-    'footer.contacto': 'Contacto',
-  },
   ca: {
     'nav.boda': "El casament",
     'nav.barcelona': 'Barcelona',
@@ -166,7 +74,7 @@ const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'boda.horarios': 'Horaris:',
     'boda.horariosValue':
       'Cerimònia 18h · Aperitiu 20h · Sopar 21h · Festa fins a les 03:00h',
-    'boda.sabado.dressValue': 'Etiqueta (Black Tie)',
+    'boda.sabado.dressValue': 'Etiqueta',
     'barcelona.eyebrow': 'Guia per a convidats',
     'barcelona.title': 'BARCELONA',
     'barcelona.script': 'Tot el que necessiteu si veniu de fora',
@@ -197,8 +105,8 @@ const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'regalos.text1':
       'El més important per a nosaltres és compartir aquest dia amb vosaltres.',
     'regalos.text2':
-      'Si a més ens voleu ajudar a començar la nostra nova aventura, ho podeu fer mitjançant una aportació al nostre viatge de noces.',
-    'regalos.iban': 'IBAN',
+      'Si a més ens voleu ajudar a començar la nostra nova aventura, ho podeu fer mitjançant una aportació al nostre viatge de noces a Egipto.',
+    'regalos.iban': 'Número de compte',
     'regalos.bizum': 'Bizum',
     'galeria.eyebrow': 'Els nostres moments',
     'galeria.title': 'GALERIA',
@@ -262,7 +170,7 @@ const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'boda.horarios': 'Timings:',
     'boda.horariosValue':
       'Ceremony 6pm · Drinks 8pm · Dinner 9pm · Party until 3am',
-    'boda.sabado.dressValue': 'Formal (Black Tie)',
+    'boda.sabado.dressValue': 'Formal',
     'barcelona.eyebrow': 'Guest guide',
     'barcelona.title': 'BARCELONA',
     'barcelona.script': 'Everything you need if you are coming from afar',
@@ -292,8 +200,8 @@ const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'regalos.text1':
       'The most important thing for us is sharing this day with you.',
     'regalos.text2':
-      'And if you would like to help us start our new adventure, you can do so with a contribution to our honeymoon.',
-    'regalos.iban': 'IBAN',
+      'And if you would like to help us start our new adventure, you can do so with a contribution to our honeymoon in Egypt.',
+    'regalos.iban': 'Account number',
     'regalos.bizum': 'Bizum',
     'galeria.eyebrow': 'Our moments',
     'galeria.title': 'GALLERY',
@@ -328,7 +236,7 @@ type LanguageContextValue = {
 }
 
 const LanguageContext = createContext<LanguageContextValue>({
-  lang: 'es',
+  lang: 'ca',
   setLang: () => undefined,
   t: (key) => key,
 })
@@ -340,7 +248,7 @@ function useLanguage() {
 function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Lang | null>(() => {
     const saved = localStorage.getItem(LANG_STORAGE_KEY)
-    return saved === 'ca' || saved === 'es' || saved === 'en' ? saved : 'es'
+    return saved === 'ca' || saved === 'en' ? saved : 'ca'
   })
   const [pickerOpen, setPickerOpen] = useState(true)
 
@@ -350,12 +258,12 @@ function LanguageProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const t = useCallback(
-    (key: string) => TRANSLATIONS[lang ?? 'es'][key] ?? key,
+    (key: string) => TRANSLATIONS[lang ?? 'ca'][key] ?? key,
     [lang],
   )
 
   return (
-    <LanguageContext.Provider value={{ lang: lang ?? 'es', setLang, t }}>
+    <LanguageContext.Provider value={{ lang: lang ?? 'ca', setLang, t }}>
       {pickerOpen && (
         <LanguagePicker
           onSelect={(next) => {
@@ -376,17 +284,14 @@ function LanguageProvider({ children }: { children: React.ReactNode }) {
 function LanguagePicker({ onSelect }: { onSelect: (lang: Lang) => void }) {
   const options: { id: Lang; label: string }[] = [
     { id: 'ca', label: 'Català' },
-    { id: 'es', label: 'Castellano' },
     { id: 'en', label: 'English' },
   ]
 
   return (
-    <div className="language-overlay" role="dialog" aria-modal="true" aria-label="Idioma">
+    <div className="language-overlay" role="dialog" aria-modal="true" aria-label="Idioma / Language">
       <div className="language-overlay__card">
-        <p className="language-overlay__title">¿Qué idioma prefieres?</p>
-        <p className="language-overlay__sub">
-          Quin idioma prefereixes? · Which language do you prefer?
-        </p>
+        <p className="language-overlay__title">Quin idioma prefereixes?</p>
+        <p className="language-overlay__sub">Which language do you prefer?</p>
         <div className="language-overlay__options">
           {options.map((o) => (
             <button
@@ -412,7 +317,6 @@ function LanguageSwitcher({ className = '' }: { className?: string }) {
   const { lang, setLang } = useLanguage()
   const options: { id: Lang; label: string }[] = [
     { id: 'ca', label: 'CAT' },
-    { id: 'es', label: 'ESP' },
     { id: 'en', label: 'ENG' },
   ]
 
@@ -574,8 +478,8 @@ function StackSection({
 
 /* ============================================================
    COMPONENTE: SlideSection
-   -> Para las secciones largas (La Boda, Barcelona, Galería,
-      FAQ). A propósito NO usan sticky/freeze: quedan en flujo
+   -> Para las secciones largas (La Boda, Barcelona).
+      A propósito NO usan sticky/freeze: quedan en flujo
       normal de scroll para que TODO su contenido sea siempre
       alcanzable, sin importar cuánto mida.
       La sensación de "deslizarse y montarse encima" de la
@@ -656,10 +560,16 @@ function SignatureDivider() {
 function HeroPhoto() {
   return (
     <div className="hero-image-wrap">
-      <picture>
-        <source media="(max-width: 720px)" srcSet={heroImageMobile} />
-        <img src={heroImage} alt="Luana y Joan" className="hero-image" />
-      </picture>
+      <video
+        className="hero-media hero-media--desktop"
+        src={heroVideo}
+        autoPlay
+        muted
+        loop
+        playsInline
+        aria-label="Luana y Joan"
+      />
+      <img src={heroGif} alt="Luana y Joan" className="hero-media hero-media--mobile" />
     </div>
   )
 }
@@ -736,7 +646,6 @@ function Navbar() {
         <a href="#boda">{t('nav.boda')}</a>
         <a href="#barcelona">{t('nav.barcelona')}</a>
         <a href="#regalos">{t('nav.regalos')}</a>
-        <a href="#galeria">{t('nav.galeria')}</a>
       </nav>
 
       <div className="navbar__right">
@@ -771,24 +680,6 @@ function AppContent() {
         <StackSection id="inicio" zIndex={1} interactive className="stack-section--hero">
           <section className="hero">
             <HeroPhoto />
-
-            <div className="hero__content">
-              <Reveal>
-                <h1 className="hero__title">
-                  LUANA <span className="hero__amp">&amp;</span> JOAN
-                </h1>
-              </Reveal>
-
-              <Reveal delay={200}>
-                <p className="hero__date">{t('hero.date')}</p>
-              </Reveal>
-
-              <Reveal delay={350}>
-                <p className="hero__place">Santa Susanna · Barcelona</p>
-              </Reveal>
-
-              
-            </div>
           </section>
         </StackSection>
 
@@ -814,7 +705,6 @@ function AppContent() {
               <p className="sticky-split__eyebrow">{t('boda.eyebrow')}</p>
               <h2 className="section__title">{t('boda.title')}</h2>
               <SignatureDivider />
-              <p className="section__script section__script--liona">{t('boda.script')}</p>
             </>
           }
           panels={[
@@ -848,7 +738,7 @@ function AppContent() {
             </div>,
 
             <div className="content-card day-card">
-              <p className="section__eyebrow">
+              <p className="section__eyebrow section__eyebrow--large">
                 <Calendar className="eyebrow-icon" size={16} strokeWidth={2} />
                 {t('boda.sabado.eyebrow')}
               </p>
@@ -961,43 +851,23 @@ function AppContent() {
 
             <div className="gift-box">
               <div className="gift-box__item">
-                <span className="gift-box__label">{t('regalos.iban')}</span>
-                <span className="gift-box__value">ESXX XXXX XXXX XXXX XXXX XXXX</span>
+                <span className="gift-box__label">{t('regalos.bizum')}</span>
+                <span className="gift-box__value">+34698697571</span>
               </div>
               <div className="gift-box__item">
-                <span className="gift-box__label">{t('regalos.bizum')}</span>
-                <span className="gift-box__value">600 000 000</span>
+                <span className="gift-box__label">{t('regalos.iban')}</span>
+                <span className="gift-box__value">
+                  Banc Sabadell
+                  <br />
+                  ES85 0081 0093 4400 0211 2515
+                </span>
               </div>
             </div>
 
-            <div className="image-placeholder image-placeholder--qr" id="qr-regalos">
-              <span>QR</span>
-            </div>
+            <img src={qrPagos} alt="QR de pagos" className="gift-qr" />
           </Reveal>
         </StackSection>
       </div>
-
-      {/* GALERÍA — flujo normal: se recorre entera con scroll */}
-      <SlideSection id="galeria" zIndex={6}>
-        <StickySplit
-          sticky={
-            <>
-              <p className="sticky-split__eyebrow">{t('galeria.eyebrow')}</p>
-              <h2 className="section__title">
-                <Camera className="title-icon" size={32} strokeWidth={1.75} />
-                {t('galeria.title')}
-              </h2>
-              <SignatureDivider />
-              <p className="section__script">{t('galeria.script')}</p>
-            </>
-          }
-          panels={[
-            <div className="image-placeholder image-placeholder--qr image-placeholder--gallery" id="qr-galeria">
-              <span>QR</span>
-            </div>,
-          ]}
-        />
-      </SlideSection>
 
       {/* FOOTER (fuera del stack, no se apila) */}
       <footer className="footer">
@@ -1007,7 +877,6 @@ function AppContent() {
           <a href="#boda">{t('nav.boda')}</a>
           <a href="#barcelona">{t('nav.barcelona')}</a>
           <a href="#regalos">{t('nav.regalos')}</a>
-          <a href="#galeria">{t('nav.galeria')}</a>
         </nav>
 
         <LanguageSwitcher className="footer__lang" />

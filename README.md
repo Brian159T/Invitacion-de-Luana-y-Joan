@@ -75,8 +75,4 @@ export default defineConfig([
 ```
 # Invitacion-de-Luana-y-Joan
 
-Invitación web de boda para Luana y Joan (multilingüe: català, castellano, inglés). Ver `AGENTS.md` para la documentación completa de arquitectura, convenciones y tareas pendientes.
-
-### PENDIENTE — resolución de la imagen del hero
-
-Las dos imágenes de portada (`src/assets/Pajaros areglados.jfif` en escritorio, 1152×928 px, y `src/assets/Luana i Joan (1)-03.jpg.jpeg` en móvil, 576×884 px) son bajas para un hero a pantalla completa: aceptables en monitores 1x, pero **borrosas/pixeladas en retina (2x) y 4K**. Sustituirlas por versiones ≥2× manteniendo los imports `heroImage` y `heroImageMobile` para no tocar código.
+Invitación web de boda para Luana y Joan (bilingüe: català por defecto e inglés). Ver `AGENTS.md` para la documentación completa de arquitectura, convenciones y tareas pendientes.
