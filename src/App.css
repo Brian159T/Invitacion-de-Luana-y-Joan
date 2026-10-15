@@ -247,18 +247,14 @@ ul {
 .hero {
   position: relative;
   width: 100%;
-  min-height: 100vh;
-  min-height: 100svh;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  display: block;
   overflow: hidden;
   padding: 0;
 }
 
 .hero-image-wrap {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  width: 100%;
   z-index: 0;
   overflow: hidden;
   display: flex;
@@ -269,6 +265,7 @@ ul {
 .hero-media {
   width: 100%;
   height: auto;
+  aspect-ratio: 3840 / 1268;
   object-fit: contain;
 }
 
@@ -281,25 +278,15 @@ ul {
     display: none;
   }
 
+  /* Móvil: el GIF vertical se muestra completo, con su proporción
+     real (540×960), ocupando todo el ancho y sin zoom ni recorte.
+     height: auto -> el contenedor toma la altura real del archivo. */
   .hero-media--mobile {
     display: block;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-}
-
-@media (max-width: 720px) {
-  .hero {
-    min-height: 88vh;
-    min-height: 88svh;
-  }
-}
-
-@media (max-width: 420px) {
-  .hero {
-    min-height: 82vh;
-    min-height: 82svh;
+    height: auto;
+    aspect-ratio: 540 / 960;
+    object-fit: contain;
   }
 }
 
@@ -835,7 +822,11 @@ ul {
   box-shadow: 0 -40px 70px -24px rgba(var(--shadow), 0.14);
 }
 
-.stack-section--hero {
+/* Hero: su alto lo marca el propio vídeo/GIF (sin altura forzada),
+   así la sección siguiente arranca justo donde acaba el vídeo,
+   sin espacios blancos. El resto de stack-sections sí llenan viewport. */
+.stack-section.stack-section--hero {
+  min-height: 0;
   background: var(--bg);
 }
 
@@ -866,6 +857,20 @@ ul {
   justify-content: center;
   text-align: center;
   padding: 110px 48px;
+}
+
+/* Cuenta atrás: su contenido arranca pegado al borde inferior del
+   vídeo (no centrado), para que sea visible al cargar la página.
+   Mantiene el sticky y la animación de "montaje" con --cover. */
+.stack-section--countdown {
+  justify-content: flex-start;
+  padding-top: 72px;
+}
+
+@media (max-width: 720px) {
+  .stack-section--countdown {
+    padding-top: 44px;
+  }
 }
 
 .stack-section::after {

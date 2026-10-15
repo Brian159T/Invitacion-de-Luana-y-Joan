@@ -569,7 +569,13 @@ function HeroPhoto() {
         playsInline
         aria-label="Luana y Joan"
       />
-      <img src={heroGif} alt="Luana y Joan" className="hero-media hero-media--mobile" />
+      <img
+        src={heroGif}
+        alt="Luana y Joan"
+        width={540}
+        height={960}
+        className="hero-media hero-media--mobile"
+      />
     </div>
   )
 }
@@ -684,7 +690,7 @@ function AppContent() {
         </StackSection>
 
         {/* CUENTA ATRÁS */}
-        <StackSection id="cuenta-atras" zIndex={2} interactive className="stack-section--center">
+        <StackSection id="cuenta-atras" zIndex={2} interactive className="stack-section--center stack-section--countdown">
           <Reveal>
             <h2 className="section__title">{t('countdown.title')}</h2>
             <SignatureDivider />
