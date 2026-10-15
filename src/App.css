@@ -626,6 +626,7 @@ ul {
 }
 
 .gift-box__label {
+  font-family: 'Source Serif 4', var(--font-body), serif;
   font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -634,7 +635,7 @@ ul {
 }
 
 .gift-box__value {
-  font-family: var(--font-display);
+  font-family: 'Source Serif 4', var(--font-display), serif;
   font-size: 20px;
   letter-spacing: 0.03em;
   color: var(--text);
